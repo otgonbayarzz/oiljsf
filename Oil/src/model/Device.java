@@ -32,7 +32,7 @@ public class Device implements Serializable {
 		buff[0] = 0x02;
 
 		try (Socket socket = new Socket(this.ip, this.port)) {
-
+			System.out.println("I AM HERE WITH " + this.ip);
 			OutputStream output = socket.getOutputStream();
 			DataOutputStream dos = new DataOutputStream(output);
 
