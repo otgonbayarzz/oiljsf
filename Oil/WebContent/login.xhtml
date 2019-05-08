@@ -9,26 +9,69 @@
 	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 
+		<div class="row">
+			<center>
+				<h3>- Create -</h3>
+			</center>
+
+		</div>
+
 
 		<div class="row">
 
 			<div class="col-md-4">User name</div>
 			<div class="col-md-8">
-				<p:inputText styleClass="form-control" placeholder="userName"
+				<p:inputText placeholder="user name"
 					value="#{userController.user.userName}"></p:inputText>
 			</div>
 			<div class="col-md-4">Password</div>
 			<div class="col-md-8">
-				<p:password styleClass="form-control" placeholder="password"
+				<p:password placeholder="password"
 					value="#{userController.user.password}"></p:password>
 			</div>
 			<div class="col-md-12">
-				<p:commandButton styleClass="btn btn-primary" value="Login"
-					action="#{userController.login}"></p:commandButton>
+				<p:commandButton styleClass="btn btn-primary" value="Add"
+					action="#{userController.add}"></p:commandButton>
 			</div>
 
 
 		</div>
+
+		<div class="row">
+			<center>
+				<h3>- READ -</h3>
+			</center>
+
+		</div>
+		<div class="row">
+			<p:dataTable value="#{userController.users}" var="u"
+				styleClass="col-md-12">
+				<p:column headerText="userName"> #{u.userName}</p:column>
+				<p:column headerText="password"> #{u.password}</p:column>
+			</p:dataTable>
+		</div>
+
+
+	<div class="row">
+			<center>
+				<h3>- Update -</h3>
+			</center>
+
+		</div>
+		<div class="row">
+			
+		</div>
+		
+		<div class="row">
+			<center>
+				<h3>- Delete -</h3>
+			</center>
+
+		</div>
+		<div class="row">
+			
+		</div>
+
 
 	</ui:define>
 </ui:composition>

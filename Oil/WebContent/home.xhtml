@@ -9,33 +9,34 @@
 	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 		<div class="row">
-			<div class="col-md-2">IP :</div>
-			<div class="col-md-4">
-				<p:inputText styleClass="form-control"
-					value="#{homeController.tempIp}" />
+			<div class="col-md-6">IP:</div>
+			<div class="col-md-6">
+				<p:inputText value="#{homeController.tempIp}" />
 			</div>
-			<div class="col-md-2">PORT :</div>
-			<div class="col-md-2">
-				<p:inputText styleClass="form-control"
-					value="#{homeController.tempPort}" />
+			<div class="col-md-6">PORT :</div>
+			<div class="col-md-6">
+				<p:inputText value="#{homeController.tempPort}" />
 			</div>
-			<div class="col-md-2">
-				<p:commandButton styleText="btn-primary" value="Add"
-					style="min-width:100%" actionListener="#{homeController.addDevice}" />
-			</div>
+		</div>
+		<div class="row">
+
+			<p:commandButton styleText="col-md-12" value="Add"
+				actionListener="#{homeController.addDevice}" />
+
 		</div>
 		<div class="row">
 			<p:inputText styleClass="col-md-12 form-control"
 				value="#{homeController.tempCommand}" />
+
 			<ui:repeat var="d" value="#{homeController.deviceList}">
 				<div class="row">
 					<div class="col-md-6">
-						<p:commandButton styleClass="btn-primary" style="min-width:100%"
-							value="#{d.ip} #{d.port}"
+						<p:commandButton style="min-width:100%" value="#{d.ip} #{d.port}"
 							actionListener="#{homeController.giveCommand(d)}" />
 					</div>
 					<div class="col-md-6">
 						<p:panel>
+
 							<p:outputLabel value="#{d.lastResponse}" />
 						</p:panel>
 					</div>

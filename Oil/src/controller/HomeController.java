@@ -2,6 +2,7 @@ package controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -25,6 +26,7 @@ public class HomeController implements Serializable {
 	private String tempIp;
 	private int tempPort;
 	private String tempCommand;
+	public Date dd = new Date();
 
 	public void addDevice() {
 		Device d = new Device(this.tempIp, this.tempPort);
@@ -84,6 +86,17 @@ public class HomeController implements Serializable {
 	public void setTempCommand(String tempCommand) {
 		this.tempCommand = tempCommand;
 	}
+
+	public Date getDd() {
+		if(dd == null)
+			dd = new Date();
+		return dd;
+	}
+
+	public void setDd(Date dd) {
+		this.dd = dd;
+	}
+	
 	
 	
 
