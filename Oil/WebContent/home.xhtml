@@ -5,119 +5,556 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
+	xmlns:c="http://java.sun.com/jsp/jstl/core" template="template.xhtml">
 	<ui:define name="content">
 
-		<div class="row text-center">
-			<div class="col-lg-4 col-md-6 mb-4">
-				<div class="card h-100">
-					<img class="card-img-top" src="http://placehold.it/500x100" />
-					<div class="card-body">
-						<div class="progress">
-							<div class="progress-bar" role="progressbar" aria-valuenow="70"
-								aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-								70%</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-8">
-								<div class="row">
-									<div class="col-sm-6">State :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">Set Volume :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">Loading Volume :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">Rate of Flow :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">Filling num :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-sm-6">Car1 :</div>
-									<div class="col-sm-6">
-										<h:inputText styleClass="form-control form-control-sm" />
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-4">
-								<div class="row">
-									Queue:0
-									<h:commandButton styleClass="btn btn-secondary " value="Stop"
-										style="width:100%">
-										<f:ajax execute="@form" render="result" />
-									</h:commandButton>
-									<h:commandButton styleClass="btn btn-secondary"
-										value="End Current" style="width:100%">
-										<f:ajax execute="@form" render="result" />
-									</h:commandButton>
-									<h:commandButton styleClass="btn btn-secondary" value="End All"
-										style="width:100%">
-										<f:ajax execute="@form" render="result" />
-									</h:commandButton>
-									<h:commandButton styleClass="btn btn-primary " value="Enable"
-										style="width:100%">
-										<f:ajax execute="@form" render="result" />
-									</h:commandButton>
-
-
-								</div>
-							</div>
-						</div>
+		<div class="row text-center margin-top">
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-primary btn-sm"
+					value="Захиалга бөглөх" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-secondary btn-sm"
+					value="Extra command" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-danger btn-sm"
+					value="Бүх үйлдлийг зогсоох" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+		</div>
+		<div class="row text-center margin-top">
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 1 <b> <br />Product :
+						</b> Diesel
 					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <br /> <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
 					</div>
 				</div>
 			</div>
-
-
-
-			<div class="col-lg-4 col-md-6 mb-4">
-				<div class="card h-100">
-					<img class="card-img-top" src="http://placehold.it/500x100" />
-					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
-							adipisicing elit. Sapiente esse necessitatibus neque.</p>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 2 <br /> <b>Product :</b> Diesel
 					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <br /> <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
 					</div>
 				</div>
 			</div>
-
-			<div class="col-lg-4 col-md-6 mb-4">
-				<div class="card h-100">
-					<img class="card-img-top" src="http://placehold.it/500x100" />
-					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
-							adipisicing elit. Sapiente esse necessitatibus neque.</p>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 3 <br /> <b>Product :</b> Diesel
 					</div>
-					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <br /> <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
 					</div>
 				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 4 <b> <br />Product :
+						</b> Diesel
+					</div>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <br /> <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row text-center margin-top">
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 5 <b>Product :</b> Diesel
+					</div>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 6 <b>Product :</b> Diesel
+					</div>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 7 <b>Product :</b> Diesel
+					</div>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col-sm-6">
+						<b> Arm: </b> 8 <b>Product :</b> Diesel
+					</div>
+					<div class="col-sm-6">
+						<b> Temp: </b> 5.46C <b>Status:</b> Free
+					</div>
+					<div class="col-sm-4">Order No:</div>
+					<div class="col-sm-8">
+						<h:selectOneMenu styleClass="form-control form-control-sm">
+							<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+							<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+						</h:selectOneMenu>
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Vehicle No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							value="3333УБА" disabled="true" />
+					</div>
+
+					<div class="col-sm-4">Trailer No:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">Capacity:</div>
+					<div class="col-sm-8">
+						<h:inputText styleClass="form-control form-control-sm"
+							disabled="true" />
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Start">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Stop">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-4">
+						<h:commandButton styleClass="btn btn-secondary btn-sm"
+							value="Check">
+							<f:ajax execute="@form" render="result" />
+						</h:commandButton>
+					</div>
+					<div class="col-sm-12">progress bar</div>
+					<div class="col-sm-12">
+						<b> status1: </b> -- <b>status2 :</b> -- <b>status3 :</b> --
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12">
+				<table class="table table-bordered">
+					<tr>
+						<th scope="col">Дугаар</th>
+						<th scope="col">Тасалгаа 1</th>
+						<th scope="col">Тасалгаа 2</th>
+						<th scope="col">Тасалгаа 3</th>
+						<th scope="col">Тасалгаа 4</th>
+						<th scope="col">Тасалгаа 5</th>
+						<th scope="col">Тасалгаа 6</th>
+						<th scope="col">Тасалгаа 7</th>
+						<th scope="col">Тасалгаа 8</th>
+
+					</tr>
+					<tr>
+						<td>8888УБА</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+					</tr>
+					<tr>
+						<td>8888УБА</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<script>
