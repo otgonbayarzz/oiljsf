@@ -8,41 +8,124 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
-		<div class="row">
-			<div class="col-md-6">IP:</div>
-			<div class="col-md-6">
-				<p:inputText value="#{homeController.tempIp}" />
-			</div>
-			<div class="col-md-6">PORT :</div>
-			<div class="col-md-6">
-				<p:inputText value="#{homeController.tempPort}" />
-			</div>
-		</div>
-		<div class="row">
 
-			<p:commandButton styleText="col-md-12" value="Add"
-				actionListener="#{homeController.addDevice}" />
+		<div class="row text-center">
+			<div class="col-lg-4 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x100" />
+					<div class="card-body">
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="70"
+								aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+								70%</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-8">
+								<div class="row">
+									<div class="col-sm-6">State :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">Set Volume :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">Loading Volume :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">Rate of Flow :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">Filling num :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
 
-		</div>
-		<div class="row">
-			<p:inputText styleClass="col-md-12 form-control"
-				value="#{homeController.tempCommand}" />
+								<div class="row">
+									<div class="col-sm-6">Car1 :</div>
+									<div class="col-sm-6">
+										<h:inputText styleClass="form-control form-control-sm" />
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									Queue:0
+									<h:commandButton styleClass="btn btn-secondary " value="Stop"
+										style="width:100%">
+										<f:ajax execute="@form" render="result" />
+									</h:commandButton>
+									<h:commandButton styleClass="btn btn-secondary"
+										value="End Current" style="width:100%">
+										<f:ajax execute="@form" render="result" />
+									</h:commandButton>
+									<h:commandButton styleClass="btn btn-secondary" value="End All"
+										style="width:100%">
+										<f:ajax execute="@form" render="result" />
+									</h:commandButton>
+									<h:commandButton styleClass="btn btn-primary " value="Enable"
+										style="width:100%">
+										<f:ajax execute="@form" render="result" />
+									</h:commandButton>
 
-			<ui:repeat var="d" value="#{homeController.deviceList}">
-				<div class="row">
-					<div class="col-md-6">
-						<p:commandButton style="min-width:100%" value="#{d.ip} #{d.port}"
-							actionListener="#{homeController.giveCommand(d)}" />
+
+								</div>
+							</div>
+						</div>
 					</div>
-					<div class="col-md-6">
-						<p:panel>
-
-							<p:outputLabel value="#{d.lastResponse}" />
-						</p:panel>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">Find Out More!</a>
 					</div>
-
 				</div>
-			</ui:repeat>
+			</div>
+
+
+
+			<div class="col-lg-4 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x100" />
+					<div class="card-body">
+						<h4 class="card-title">Card title</h4>
+						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
+							adipisicing elit. Sapiente esse necessitatibus neque.</p>
+					</div>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">Find Out More!</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4 col-md-6 mb-4">
+				<div class="card h-100">
+					<img class="card-img-top" src="http://placehold.it/500x100" />
+					<div class="card-body">
+						<h4 class="card-title">Card title</h4>
+						<p class="card-text">Lorem ipsum dolor sit amet, consectetur
+							adipisicing elit. Sapiente esse necessitatibus neque.</p>
+					</div>
+					<div class="card-footer">
+						<a href="#" class="btn btn-primary">Find Out More!</a>
+					</div>
+				</div>
+			</div>
 		</div>
+		<script>
+			//<![CDATA[
+			$(document).ready(function() {
+
+			});
+			//]]>
+		</script>
 	</ui:define>
 </ui:composition>
