@@ -7,6 +7,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import Dao.CustomDao;
 import model.User;
 import model.UserDao;
 
@@ -19,16 +20,7 @@ public class UserController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<User> users;
 	private User user;
-	UserDao ud = new UserDao();
-
-	public String add() {
-		String ret = "home";
-
-		ud.insertUser(this.user);
-		users = ud.getUserList();
-		return "";
-
-	}
+	CustomDao cursor = new CustomDao();
 
 	public User getUser() {
 		if (user == null)
@@ -42,9 +34,10 @@ public class UserController implements Serializable {
 
 	public List<User> getUsers() {
 		if (users == null)
-			users = ud.getUserList();
+			users = new ArrayList<User>();
 
 		return users;
+
 	}
 
 	public void setUsers(List<User> users) {

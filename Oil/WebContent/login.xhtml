@@ -5,7 +5,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" template="template.xhtml">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 
 		<div class="row">
@@ -16,7 +17,22 @@
 		</div>
 
 
-		<div class="row"></div>
+		<div class="row">
+
+			<div class="col-md-4">User name</div>
+			<div class="col-md-8">
+				
+			</div>
+			<div class="col-md-4">Password</div>
+			<div class="col-md-8">
+				
+			</div>
+			<div class="col-md-12">
+				
+			</div>
+
+
+		</div>
 
 		<div class="row">
 			<center>
@@ -24,7 +40,12 @@
 			</center>
 
 		</div>
-		<div class="row"></div>
+		<div class="row">
+			<ui:repeat value="#{userController.users}" var="u" >
+				#{u.userName}  ++ #{u.password}  
+				
+			</ui:repeat>
+		</div>
 
 
 		<div class="row">

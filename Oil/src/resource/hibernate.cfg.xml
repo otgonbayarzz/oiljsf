@@ -15,5 +15,7 @@
  
         <!-- Mapping With Model Class Containing Annotations -->
         <mapping class="model.User" />
+        <mapping class="model.Bay" />
+        <mapping class="model.OrderDtl" />
     </session-factory>
 </hibernate-configuration>
