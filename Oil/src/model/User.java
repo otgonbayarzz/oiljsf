@@ -21,6 +21,9 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
+	@Column(name = "adminStatus")
+	private int adminStatus;
+
 	public User() {
 		super();
 	}
@@ -47,6 +50,14 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getAdminStatus() {
+		return adminStatus;
+	}
+
+	public void setAdminStatus(int adminStatus) {
+		this.adminStatus = adminStatus;
 	}
 
 }

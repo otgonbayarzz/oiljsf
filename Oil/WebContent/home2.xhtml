@@ -1,0 +1,894 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" template="template.xhtml">
+	<ui:define name="content">
+
+		<div class="row text-center margin-top">
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-primary btn-sm"
+					value="Захиалга бөглөх" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-secondary btn-sm"
+					value="Extra command" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+			<div class="col-lg-4">
+				<h:commandButton styleClass="btn btn-danger btn-sm"
+					value="Бүх үйлдлийг зогсоох" style="width:100%">
+					<f:ajax execute="@form" render="result" />
+				</h:commandButton>
+			</div>
+		</div>
+		<div class="row text-center margin-top">
+
+			<table class="table table-borderless">
+				<tr>
+					<td colspan="2">
+						<div class="row">
+							<!-- Bay Info -->
+							<div class="col-sm-12 sm-height boldoo">Bay no</div>
+							<div class="col-sm-12 sm-height boldoo">Bay Status</div>
+							<div class="col-sm-12 sm-height boldoo">Product Type</div>
+
+							<!-- Order info -->
+							<div class="col-sm-12 sm-height boldoo ">Order ID</div>
+							<div class="col-sm-12 sm-height boldoo">Vehicle ID</div>
+							<div class="col-sm-12 sm-height boldoo">Product ID</div>
+							<div class="col-sm-12 sm-height boldoo">Order Volume</div>
+							<div class="col-sm-12 sm-height boldoo">Compartment Count</div>
+							<div class="col-sm-12 sm-height boldoo">Compartment ID</div>
+							<div class="col-sm-12 sm-height boldoo">Compartment
+								Capacity</div>
+							<!-- Loading info -->
+							<div class="col-sm-12 sm-height boldoo">Load Status</div>
+							<div class="col-sm-12 sm-height boldoo">Loading Volume</div>
+							<div class="col-sm-12 sm-height boldoo">Flow Rate</div>
+							<div class="col-sm-12 sm-height boldoo">Temperature</div>
+							<div class="col-sm-12 sm-height boldoo">Density</div>
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">1</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">2</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">3</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">4</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">5</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">6</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">7</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+					<td>
+						<div class="row">
+							<!-- Bay no -->
+							<div class="col-sm-12 sm-height boldoo">8</div>
+							<!-- Bay status -->
+							<div class="col-sm-12 sm-height boldoo">Active</div>
+							<!-- Product Type -->
+							<div class="col-sm-12 sm-height boldoo">Аи-92 (Red)</div>
+							<!-- Order no -->
+							<div class="col-sm-12">
+								<h:selectOneMenu styleClass="form-control form-control-sm">
+									<f:selectItem itemLabel="0001" itemValue="0001"></f:selectItem>
+									<f:selectItem itemLabel="0002" itemValue="0002"></f:selectItem>
+								</h:selectOneMenu>
+							</div>
+							<!-- Order ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									disabled="true" />
+							</div>
+							<!-- Vehicle ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Product ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Order Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Count -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment ID -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+							<!-- Compartment Capacity -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm"
+									disabled="true" />
+							</div>
+
+							<!-- Load Status -->
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="start">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+							<div class="col-sm-6">
+								<h:commandButton styleClass="btn btn-secondary btn-sm"
+									value="next">
+									<f:ajax execute="@form" render="result" />
+								</h:commandButton>
+							</div>
+
+							<!-- Loading Volume -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Flow Rate -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0 lpm" disabled="true" />
+							</div>
+
+							<!-- Temperature -->
+							<div class="col-sm-12">
+								<h:inputText styleClass="form-control form-control-sm "
+									value="0" disabled="true" />
+							</div>
+
+
+							<!-- Loading Volume -->
+
+							<div class="col-sm-12">
+								<h:commandButton styleClass="btn btn-danger btn-sm" value="STOP"
+									style="width:100%">
+									<f:ajax execute="@form" render="stop" />
+								</h:commandButton>
+							</div>
+
+
+						</div>
+					</td>
+
+
+
+
+				</tr>
+			</table>
+
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12">
+				<table class="table table-bordered">
+					<tr>
+						<th scope="col">Дугаар</th>
+						<th scope="col">Тасалгаа 1</th>
+						<th scope="col">Тасалгаа 2</th>
+						<th scope="col">Тасалгаа 3</th>
+						<th scope="col">Тасалгаа 4</th>
+						<th scope="col">Тасалгаа 5</th>
+						<th scope="col">Тасалгаа 6</th>
+						<th scope="col">Тасалгаа 7</th>
+						<th scope="col">Тасалгаа 8</th>
+
+					</tr>
+					<tr>
+						<td>8888УБА</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+					</tr>
+					<tr>
+						<td>8888УБА</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+						<td>500L 92</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script>
+			//<![CDATA[
+			$(document).ready(function() {
+
+			});
+			//]]>
+		</script>
+	</ui:define>
+</ui:composition>

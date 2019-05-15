@@ -4,11 +4,30 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-heroic-features/blob/master/LICENSE)
  */
 body {
-  padding-top: 56px;
-  font-size : 10px;
+	padding-top: 56px;
+	font-size: 11px;
 }
 
-.margin-top
-{
-	margin-top:25px;
+.margin-top {
+	margin-top: 25px;
+}
+
+.sm-height {
+	height: calc(1.5em + .5rem + 5px) !important;
+	white-space: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.form-control-sm {
+	height: calc(1.5em + .5rem - 4px) !important;
+}
+
+.btn-sm {
+	height: calc(1.5em + .5rem) !important;
+}
+
+.boldoo {
+	font-weight: 600;
 }

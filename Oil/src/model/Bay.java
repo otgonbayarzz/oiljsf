@@ -16,6 +16,12 @@ public class Bay {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
+	@Column(name = "armId")
+	private int armId;
+
+	@Column(name = "status")
+	private int status;
+
 	@Column(name = "productId")
 	private int productId;
 
@@ -44,6 +50,22 @@ public class Bay {
 
 	public void setControlType(int controlType) {
 		this.controlType = controlType;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getArmId() {
+		return armId;
+	}
+
+	public void setArmId(int armId) {
+		this.armId = armId;
 	}
 
 }
