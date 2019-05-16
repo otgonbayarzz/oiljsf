@@ -8,9 +8,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
-import Dao.CustomDao;
+import db.CustomDao;
 import model.User;
-import model.UserDao;
+
 
 @SessionScoped
 @ManagedBean(name = "userController")

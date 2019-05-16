@@ -26,7 +26,7 @@ public class HibernateUtil {
 	public static void loadSessionFactory() {
 
 		Configuration configuration = new Configuration();
-		configuration.configure("../resource/hibernate.cfg.xml");
+		configuration.configure("../db/hibernate.cfg.xml");
 		
 		configuration.addAnnotatedClass(User.class);
 		ServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())

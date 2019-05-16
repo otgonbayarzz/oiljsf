@@ -1,4 +1,4 @@
-package Dao;
+package db;
 
 import java.util.List;
 
@@ -96,6 +96,7 @@ public class CustomDao {
 		try {
 			session = HibernateUtil.getSession();
 			transaction = session.beginTransaction();
+
 			session.save(o);
 
 			transaction.commit();
@@ -113,7 +114,32 @@ public class CustomDao {
 		}
 	}
 
-	public void deleteUser(Object o) {
+	public void update(Object o) {
+
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HibernateUtil.getSession();
+			transaction = session.beginTransaction();
+
+			session.update(o);
+
+			transaction.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// handle exception here
+			if (transaction != null)
+				transaction.rollback();
+		} finally {
+			try {
+				if (session != null)
+					session.close();
+			} catch (Exception ex) {
+			}
+		}
+	}
+
+	public void delete(Object o) {
 
 		Session session = null;
 		Transaction transaction = null;

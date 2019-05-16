@@ -1,0 +1,36 @@
+CREATE TABLE `Bay` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `armId` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `productId` int(11) DEFAULT NULL,
+  `controlType` int(11) DEFAULT NULL,
+  `ip` varchar(35) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+------------------------------------------
+
+
+CREATE TABLE `OrderDtl` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `armId` int(11) DEFAULT NULL,
+  `orderId` int(11) DEFAULT NULL,
+  `vehicleId` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `orderVolume` float DEFAULT NULL,
+  `compartmentNo` int(11) DEFAULT NULL,
+  `fillStatus` int(11) DEFAULT NULL,
+  `productId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+------------------------------------------
+
+
+CREATE TABLE `User` (
+  `userName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `adminStatus` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
