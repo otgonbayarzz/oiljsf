@@ -7,7 +7,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-
 import model.User;
 
 public class HibernateUtil {
@@ -27,7 +26,7 @@ public class HibernateUtil {
 
 		Configuration configuration = new Configuration();
 		configuration.configure("../db/hibernate.cfg.xml");
-		
+
 		configuration.addAnnotatedClass(User.class);
 		ServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
 				.build();

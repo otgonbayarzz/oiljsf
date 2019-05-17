@@ -1,28 +1,33 @@
 CREATE TABLE `Bay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `armId` int(11) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `productId` int(11) DEFAULT NULL,
-  `controlType` int(11) DEFAULT NULL,
+  `armId` int(11) DEFAULT 0,
+  `status` int(11) DEFAULT 0,
+  `productId` int(11) DEFAULT 0,
+  `controlType` int(11) DEFAULT 0,
   `ip` varchar(35) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bayId` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ------------------------------------------
 
 
 CREATE TABLE `OrderDtl` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `armId` int(11) DEFAULT NULL,
-  `orderId` int(11) DEFAULT NULL,
+  `armId` int(11) DEFAULT 0,
+  `orderId` int(11) DEFAULT 0,
   `vehicleId` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
-  `orderVolume` float DEFAULT NULL,
-  `compartmentNo` int(11) DEFAULT NULL,
-  `fillStatus` int(11) DEFAULT NULL,
-  `productId` int(11) DEFAULT NULL,
+  `orderVolume` float DEFAULT 0,
+  `compartmentNo` int(11) DEFAULT 0,
+  `fillStatus` int(11) DEFAULT 0,
+  `productId` int(11) DEFAULT 0,
+  `bayId` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+
+багана нэмэгдэнэ
 
 ------------------------------------------
 

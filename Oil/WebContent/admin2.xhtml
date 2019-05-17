@@ -39,7 +39,7 @@
 						<td>
 							<div class="row">
 
-								<div class="col-sm-12 sm-height boldoo">#{bay.id}</div>
+								<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
 
 
 								<div class="col-sm-12 sm-height boldoo">
@@ -129,7 +129,8 @@
 
 					<div class="col-md-1">
 						<h:commandLink style="width:100%" update="@(.table)"
-							actionListener="#{adminController.deleteUser(usr)}">
+							actionListener="#{adminController.deleteUser(usr)}" disabled="#{usr.admin}">
+							
 							<i class="fas fa-trash"></i>
 							<f:ajax execute="@form" render="result" />
 
@@ -140,7 +141,7 @@
 
 				<div class="row">
 					<div class="col-md-11" />
-					<div class="col-md-1">
+					<div class="col-md-1 float-right">
 						<h:commandButton styleClass="btn btn-primary btn-sm"
 							actionListener="#{adminController.addUser}" value="Нэмэх">
 							<f:ajax execute="@form" render="result" />
@@ -159,6 +160,7 @@
 
 		<script>
 			//<![CDATA[
+
 			$(document).ready(function() {
 				$('.loaderButtonClassUnique')[0].onclick();
 

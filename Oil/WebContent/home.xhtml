@@ -5,7 +5,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" template="template.xhtml">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
@@ -64,34 +65,40 @@
 							<td>
 								<div class="row">
 									<!-- Bay no -->
-									<div class="col-sm-12 sm-height boldoo">#{bay.id}</div>
+									<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
 									<!-- Bay status -->
-									<div class="col-sm-12 sm-height boldoo">#{bay.active}</div>
+									<div class="col-sm-12 sm-height boldoo">#{bay.active ==
+										true ? 'Active' : 'Inactive' }</div>
 									<!-- Product Type -->
 									<div class="col-sm-12 sm-height boldoo">#{bay.productId}</div>
 									<!-- Order no -->
 									<div class="col-sm-12">
 										<h:selectOneMenu styleClass="form-control form-control-sm"
-											value="#{bay.selectedOrder.id}">
+											label="#{bay.selectedOrderId}" value="#{bay.selectedOrderId}"
+											disabled="#{bay.active}">
 											<f:selectItems value="#{bay.orders}" var="o"
-												itemLabel="#{o.orderId}" itemValue="#{o.id}">
+												itemLabel="#{o.orderId}" itemValue="#{o.orderId}">
 											</f:selectItems>
+											<p:ajax event="change"
+												listener="#{homeController.changeOrder(bay, bay.selectedOrderId)}"></p:ajax>
 										</h:selectOneMenu>
-									</div>
-									<!-- Order ID -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm "
-											value="#{bay.selectedOrder.orderId}" disabled="true" />
 									</div>
 									<!-- Vehicle ID -->
 									<div class="col-sm-12">
 										<h:inputText styleClass="form-control form-control-sm"
 											disabled="true" value="#{bay.selectedOrder.vehicleId}" />
 									</div>
+
 									<!-- Product ID -->
 									<div class="col-sm-12">
 										<h:inputText styleClass="form-control form-control-sm"
 											disabled="true" value="#{bay.selectedOrder.productId}" />
+									</div>
+
+									<!-- Order Volume -->
+									<div class="col-sm-12">
+										<h:inputText styleClass="form-control form-control-sm"
+											disabled="true" value="#{bay.selectedOrder.orderVolume}" />
 									</div>
 									<!-- Order Volume -->
 									<div class="col-sm-12">
@@ -117,13 +124,13 @@
 									<!-- Load Status -->
 									<div class="col-sm-6">
 										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="start">
+											value="start" disabled="#{bay.active}">
 											<f:ajax execute="@form" render="result" />
 										</h:commandButton>
 									</div>
 									<div class="col-sm-6">
 										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="next">
+											value="next" disabled="#{bay.active}">
 											<f:ajax execute="@form" render="result" />
 										</h:commandButton>
 									</div>
@@ -152,7 +159,7 @@
 
 									<div class="col-sm-12">
 										<h:commandButton styleClass="btn btn-danger btn-sm"
-											value="STOP" style="width:100%">
+											value="STOP" style="width:100%" disabled="#{bay.active}">
 											<f:ajax execute="@form" render="stop" />
 										</h:commandButton>
 									</div>

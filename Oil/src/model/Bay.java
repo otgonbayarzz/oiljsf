@@ -20,6 +20,9 @@ public class Bay {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
+	@Column(name = "bayId")
+	private int bayId;
+
 	@Column(name = "armId")
 	private int armId;
 
@@ -52,6 +55,9 @@ public class Bay {
 
 	@Transient
 	private OrderDtl selectedOrder;
+
+	@Transient
+	private int selectedOrderId;
 
 	public int getId() {
 		return id;
@@ -145,7 +151,7 @@ public class Bay {
 
 	public OrderDtl getSelectedOrder() {
 		if (selectedOrder == null)
-			if (orders.size() > 0)
+			if (getOrders().size() > 0)
 				selectedOrder = orders.get(0);
 			else
 				selectedOrder = new OrderDtl();
@@ -155,6 +161,22 @@ public class Bay {
 
 	public void setSelectedOrder(OrderDtl selectedOrder) {
 		this.selectedOrder = selectedOrder;
+	}
+
+	public int getBayId() {
+		return bayId;
+	}
+
+	public void setBayId(int bayId) {
+		this.bayId = bayId;
+	}
+
+	public int getSelectedOrderId() {
+		return selectedOrderId;
+	}
+
+	public void setSelectedOrderId(int selectedOrderId) {
+		this.selectedOrderId = selectedOrderId;
 	}
 
 }

@@ -48,10 +48,18 @@ public class HomeController implements Serializable {
 
 			for (Bay b : bays) {
 				b.getOrders().clear();
-				for (Object o : cursor.getList(new OrderDtl())) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT od ");
+				sb.append("from OrderDtl od ");
+				sb.append("WHERE bayId =  ");
+				sb.append(b.getBayId());
+				
+				sb.append("  ");
+				for (Object o : cursor.getListByQuery(new OrderDtl(), sb.toString())) {
 					OrderDtl od = (OrderDtl) o;
 					b.getOrders().add(od);
 				}
+
 			}
 
 		} catch (Exception ex) {
@@ -60,6 +68,20 @@ public class HomeController implements Serializable {
 
 		PrimeFaces.current().ajax().update("form:baySection");
 
+	}
+	
+	public void changeOrder(Bay b, int id) {
+		for (OrderDtl od :b.getOrders())
+		{
+			if(od.getOrderId() == id)
+			{
+				b.setSelectedOrder(od);
+			}
+		}
+				
+		
+		PrimeFaces.current().ajax().update("form:baySection");
+		
 	}
 
 	public void addDevice() {

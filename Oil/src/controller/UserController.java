@@ -46,6 +46,8 @@ public class UserController implements Serializable {
 		sb.append(" AND user.password = ");
 		sb.append(getUser().getUserName());
 		sb.append(" ");
+		
+		
 		for(Object o: cursor.getListByQuery(getUser(), sb.toString()))
 		{
 			this.user = (User) o;

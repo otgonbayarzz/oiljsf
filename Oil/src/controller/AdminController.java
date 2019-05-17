@@ -99,7 +99,6 @@ public class AdminController implements Serializable {
 	public void addUser() {
 		getUsers();
 		User u = new User();
-		cursorUser = new User();
 		users.add(u);
 		PrimeFaces.current().ajax().update("form:userSection");
 	}
