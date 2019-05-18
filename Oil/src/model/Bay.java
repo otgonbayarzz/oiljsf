@@ -1,5 +1,18 @@
 package model;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +23,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.swing.Timer;
+
+import org.primefaces.PrimeFaces;
 
 @Entity
 @Table(name = "Bay")
-public class Bay {
+public class Bay implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
@@ -58,6 +79,74 @@ public class Bay {
 
 	@Transient
 	private int selectedOrderId;
+
+	@Transient
+	private String command;
+
+	@Transient
+	private String response;
+
+	public void giveCommand() {
+
+		String lastResponse = "";
+		int port = 7734;
+		byte[] buff = new byte[10000];
+		buff[0] = 0x02;
+		Socket socket = null;
+		try {
+			socket = new Socket(this.ip, port);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		try {
+
+			OutputStream output = socket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(output);
+			byte[] b = command.getBytes(StandardCharsets.UTF_8);
+
+			for (int i = 0; i < b.length; i++) {
+				buff[i + 1] = b[i];
+			}
+			buff[b.length + 1] = 0x03;
+
+			dos.write(buff, 0, b.length + 2);
+			Thread.sleep(1000);
+
+			byte[] data = new byte[socket.getInputStream().available()];
+			int bytes = socket.getInputStream().read(data, 0, data.length);
+			String responseData = new String(data, 0, bytes, "ASCII");
+			this.response = responseData;
+
+		} catch (UnknownHostException ex) {
+
+			lastResponse = ex.getMessage();
+			this.response = this.response + "\n" + lastResponse;
+
+		}
+
+		catch (IOException ex) {
+
+			System.out.println("I/O error: " + ex.getMessage());
+			lastResponse = ex.getMessage();
+
+		} catch (Exception ex)
+
+		{
+
+			ex.printStackTrace();
+		} finally {
+			try {
+				socket.close();
+			} catch (Exception ex)
+
+			{
+
+				ex.printStackTrace();
+			}
+		}
+		PrimeFaces.current().ajax().update("form:baySection");
+	}
 
 	public int getId() {
 		return id;
@@ -177,6 +266,22 @@ public class Bay {
 
 	public void setSelectedOrderId(int selectedOrderId) {
 		this.selectedOrderId = selectedOrderId;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+
+	public void setCommand(String command) {
+		this.command = command;
+	}
+
+	public String getResponse() {
+		return response;
+	}
+
+	public void setResponse(String response) {
+		this.response = response;
 	}
 
 }

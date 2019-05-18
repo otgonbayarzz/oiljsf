@@ -39,17 +39,23 @@ public class UserController implements Serializable {
 	
 	public String login() {
 		StringBuilder sb = new StringBuilder();
+		
+		System.out.println(getUser().getPassword());
 		sb.append("SELECT user  ");
 		sb.append("FROM User user ");
-		sb.append("WHERE user.userName = ");
+		sb.append("WHERE user.userName = '");
 		sb.append(getUser().getUserName());
-		sb.append(" AND user.password = ");
-		sb.append(getUser().getUserName());
-		sb.append(" ");
+		sb.append("' AND user.password = '");
+		sb.append(getUser().getPassword());
+		sb.append("' ");
+		
+		
+		
 		
 		
 		for(Object o: cursor.getListByQuery(getUser(), sb.toString()))
 		{
+			System.out.println("I AM HERE");
 			this.user = (User) o;
 			return "home";
 		}

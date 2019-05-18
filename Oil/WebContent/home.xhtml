@@ -75,7 +75,7 @@
 									<div class="col-sm-12">
 										<h:selectOneMenu styleClass="form-control form-control-sm"
 											label="#{bay.selectedOrderId}" value="#{bay.selectedOrderId}"
-											disabled="#{bay.active}">
+											disabled="#{!bay.active}">
 											<f:selectItems value="#{bay.orders}" var="o"
 												itemLabel="#{o.orderId}" itemValue="#{o.orderId}">
 											</f:selectItems>
@@ -113,24 +113,27 @@
 									<!-- Compartment ID -->
 									<div class="col-sm-12">
 										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.compartmentNo}" />
+											disabled="true" value="#{bay.response}" />
+
+
 									</div>
 									<!-- Compartment Capacity -->
 									<div class="col-sm-12">
 										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.compartmentNo}" />
+											value="#{bay.command}" />
 									</div>
 
 									<!-- Load Status -->
 									<div class="col-sm-6">
 										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="start" disabled="#{bay.active}">
+											value="start" actionListener="#{bay.giveCommand()}"
+											disabled="#{!bay.active}">
 											<f:ajax execute="@form" render="result" />
 										</h:commandButton>
 									</div>
 									<div class="col-sm-6">
 										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="next" disabled="#{bay.active}">
+											value="next" disabled="#{!bay.active}">
 											<f:ajax execute="@form" render="result" />
 										</h:commandButton>
 									</div>
@@ -159,8 +162,8 @@
 
 									<div class="col-sm-12">
 										<h:commandButton styleClass="btn btn-danger btn-sm"
-											value="STOP" style="width:100%" disabled="#{bay.active}">
-											<f:ajax execute="@form" render="stop" />
+											value="STOP" style="width:100%" disabled="#{!bay.active}">
+											<f:ajax execute="@form" render="result" />
 										</h:commandButton>
 									</div>
 
