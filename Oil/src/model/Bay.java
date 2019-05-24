@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -86,20 +87,14 @@ public class Bay implements Serializable {
 	@Transient
 	private String response;
 
-	public void giveCommand() {
+	public void start() {
 
 		String lastResponse = "";
 		int port = 7734;
 		byte[] buff = new byte[10000];
 		buff[0] = 0x02;
-		Socket socket = null;
-		try {
-			socket = new Socket(this.ip, port);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 
-		try {
+		try (Socket socket = new Socket(this.ip, port)) {
 
 			OutputStream output = socket.getOutputStream();
 			DataOutputStream dos = new DataOutputStream(output);
@@ -121,31 +116,72 @@ public class Bay implements Serializable {
 		} catch (UnknownHostException ex) {
 
 			lastResponse = ex.getMessage();
-			this.response = this.response + "\n" + lastResponse;
+			this.response = lastResponse;
 
-		}
-
-		catch (IOException ex) {
+		} catch (IOException ex) {
 
 			System.out.println("I/O error: " + ex.getMessage());
 			lastResponse = ex.getMessage();
+			this.response = lastResponse;
 
-		} catch (Exception ex)
+		} catch (InterruptedException e) {
 
-		{
-
-			ex.printStackTrace();
-		} finally {
-			try {
-				socket.close();
-			} catch (Exception ex)
-
-			{
-
-				ex.printStackTrace();
-			}
+			// TODO Auto-generated catch block
+			lastResponse = e.getMessage();
+			e.printStackTrace();
+			this.response = lastResponse;
 		}
-		PrimeFaces.current().ajax().update("form:baySection");
+		StringBuilder sb = new StringBuilder();
+		sb.append("form:bb:");
+		sb.append(this.id - 1);
+		sb.append(":section");
+
+		StringBuilder ssb = new StringBuilder();
+		ssb.append("PF('pb");
+		ssb.append(this.id - 1);
+		ssb.append("').getJQ().show();");
+
+		StringBuilder ssbb = new StringBuilder();
+		ssbb.append("PF('poll");
+		ssbb.append(this.id - 1);
+		ssbb.append("').start();");
+
+		PrimeFaces.current().ajax().update(sb.toString());
+		PrimeFaces.current().executeScript(ssb.toString());
+		PrimeFaces.current().executeScript(ssbb.toString());
+
+	}
+
+	public void stop() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("form:bb:");
+		sb.append(this.id - 1);
+		sb.append(":section");
+
+		StringBuilder ssb = new StringBuilder();
+		ssb.append("PF('pb");
+		ssb.append(this.id - 1);
+		ssb.append("').getJQ().hide();");
+
+		StringBuilder ssbb = new StringBuilder();
+		ssbb.append("PF('poll");
+		ssbb.append(this.id - 1);
+		ssbb.append("').stop();");
+
+		PrimeFaces.current().ajax().update(sb.toString());
+		PrimeFaces.current().executeScript(ssb.toString());
+		PrimeFaces.current().executeScript(ssbb.toString());
+
+	}
+
+	public void check() {
+		System.out.println("i am here");
+		this.response = Integer.toString(new Date().getSeconds());
+		StringBuilder sb = new StringBuilder();
+		sb.append("form:bb:");
+		sb.append(this.id - 1);
+		sb.append(":section");
+		PrimeFaces.current().ajax().update(sb.toString());
 	}
 
 	public int getId() {

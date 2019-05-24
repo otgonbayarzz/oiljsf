@@ -60,116 +60,122 @@
 
 							</div>
 						</td>
-						<ui:repeat value="#{homeController.bays}" var="bay">
+						<ui:repeat value="#{homeController.bays}" var="bay" id="bb"
+							varStatus="index">
 
-							<td>
-								<div class="row">
-									<!-- Bay no -->
-									<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
-									<!-- Bay status -->
-									<div class="col-sm-12 sm-height boldoo">#{bay.active ==
-										true ? 'Active' : 'Inactive' }</div>
-									<!-- Product Type -->
-									<div class="col-sm-12 sm-height boldoo">#{bay.productId}</div>
-									<!-- Order no -->
-									<div class="col-sm-12">
-										<h:selectOneMenu styleClass="form-control form-control-sm"
-											label="#{bay.selectedOrderId}" value="#{bay.selectedOrderId}"
-											disabled="#{!bay.active}">
-											<f:selectItems value="#{bay.orders}" var="o"
-												itemLabel="#{o.orderId}" itemValue="#{o.orderId}">
-											</f:selectItems>
-											<p:ajax event="change"
-												listener="#{homeController.changeOrder(bay, bay.selectedOrderId)}"></p:ajax>
-										</h:selectOneMenu>
+							<p:poll interval="1" listener="#{bay.check}" autoStart="false"
+								widgetVar="poll#{index.index}" />
+							<td><h:panelGroup styleClass="bay_#{bay.id}" id="section">
+									<div class="row" id="bay_#{bay.id}">
+										<!-- Bay no -->
+										<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
+										<!-- Bay status -->
+										<div class="col-sm-12 sm-height boldoo">#{bay.active ==
+											true ? 'Active' : 'Inactive' }</div>
+										<!-- Product Type -->
+										<div class="col-sm-12 sm-height boldoo">#{bay.productId}</div>
+										<!-- Order no -->
+										<div class="col-sm-12">
+											<h:selectOneMenu styleClass="form-control form-control-sm"
+												label="#{bay.selectedOrderId} - #{bay.selectedOrder.vehicleId} - #{bay.selectedOrder.compartmentNo} - #{bay.selectedOrder.orderVolume}"
+												value="#{bay.selectedOrderId}" disabled="#{!bay.active}">
+												<f:selectItems value="#{bay.orders}" var="o"
+													itemLabel="OrNo: #{o.orderId},  TrNo: #{o.vehicleId},  CompNo: #{o.compartmentNo},  Cap: #{o.orderVolume}" itemValue="#{o.orderId}">
+												</f:selectItems>
+												<p:ajax event="change"
+													listener="#{homeController.changeOrder(bay, bay.selectedOrderId, index.index)}"></p:ajax>
+											</h:selectOneMenu>
+										</div>
+										<!-- Vehicle ID -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{bay.selectedOrder.vehicleId}" />
+										</div>
+
+										<!-- Product ID -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{bay.selectedOrder.productId}" />
+										</div>
+
+										<!-- Order Volume -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{bay.selectedOrder.orderVolume}" />
+										</div>
+										<!-- Order Volume -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{bay.selectedOrder.orderVolume}" />
+										</div>
+										<!-- Compartment Count -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{bay.selectedOrder.compartmentNo}" />
+										</div>
+										<!-- Compartment ID -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" />
+
+
+										</div>
+										<!-- Compartment Capacity -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm" />
+										</div>
+
+										<!-- Load Status -->
+										<div class="col-sm-6">
+											<h:commandButton styleClass="btn btn-secondary btn-sm"
+												value="start" actionListener="#{bay.start}"
+												disabled="#{!bay.active}">
+												<f:ajax execute="@form" render="result" />
+											</h:commandButton>
+										</div>
+										<div class="col-sm-6">
+											<h:commandButton styleClass="btn btn-secondary btn-sm"
+												value="next" disabled="#{!bay.active}"
+												actionListener="#{bay.stop}">
+												<f:ajax execute="@form" render="result" />
+											</h:commandButton>
+										</div>
+
+										<!-- Loading Volume -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm "
+												disabled="true" value="#{bay.response}" />
+											<p:progressBar widgetVar="pb#{index.index}" />
+
+										</div>
+
+
+										<!-- Flow Rate -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm "
+												value="0 lpm" disabled="true" />
+										</div>
+
+										<!-- Temperature -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm "
+												value="0" disabled="true" />
+										</div>
+
+
+										<!-- Loading Volume -->
+
+										<div class="col-sm-12">
+											<h:commandButton styleClass="btn btn-danger btn-sm"
+												value="STOP" style="width:100%" disabled="#{!bay.active}"
+												actionListener="#{bay.stop}">>
+												<f:ajax execute="@form" render="result" />
+											</h:commandButton>
+										</div>
+
+
 									</div>
-									<!-- Vehicle ID -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.vehicleId}" />
-									</div>
-
-									<!-- Product ID -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.productId}" />
-									</div>
-
-									<!-- Order Volume -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.orderVolume}" />
-									</div>
-									<!-- Order Volume -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.orderVolume}" />
-									</div>
-									<!-- Compartment Count -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.selectedOrder.compartmentNo}" />
-									</div>
-									<!-- Compartment ID -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											disabled="true" value="#{bay.response}" />
-
-
-									</div>
-									<!-- Compartment Capacity -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm"
-											value="#{bay.command}" />
-									</div>
-
-									<!-- Load Status -->
-									<div class="col-sm-6">
-										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="start" actionListener="#{bay.giveCommand()}"
-											disabled="#{!bay.active}">
-											<f:ajax execute="@form" render="result" />
-										</h:commandButton>
-									</div>
-									<div class="col-sm-6">
-										<h:commandButton styleClass="btn btn-secondary btn-sm"
-											value="next" disabled="#{!bay.active}">
-											<f:ajax execute="@form" render="result" />
-										</h:commandButton>
-									</div>
-
-									<!-- Loading Volume -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm "
-											value="0" disabled="true" />
-									</div>
-
-
-									<!-- Flow Rate -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm "
-											value="0 lpm" disabled="true" />
-									</div>
-
-									<!-- Temperature -->
-									<div class="col-sm-12">
-										<h:inputText styleClass="form-control form-control-sm "
-											value="0" disabled="true" />
-									</div>
-
-
-									<!-- Loading Volume -->
-
-									<div class="col-sm-12">
-										<h:commandButton styleClass="btn btn-danger btn-sm"
-											value="STOP" style="width:100%" disabled="#{!bay.active}">
-											<f:ajax execute="@form" render="result" />
-										</h:commandButton>
-									</div>
-
-
-								</div>
-							</td>
+								</h:panelGroup></td>
 						</ui:repeat>
 
 
@@ -223,15 +229,15 @@
 				</table>
 			</div>
 		</div>
-		<h:commandButton styleClass="loaderButtonClassUnique"
-			actionListener="#{homeController.initData()}" style="display:none;">
-			<f:ajax execute="@form" render="result" />
-		</h:commandButton>
+		<p:remoteCommand name="initData"
+			actionListener="#{homeController.initData}">
+
+		</p:remoteCommand>
 
 		<script>
 			//<![CDATA[
 			$(document).ready(function() {
-				$('.loaderButtonClassUnique')[0].onclick();
+				initData();
 
 			});
 			//]]>

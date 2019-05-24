@@ -23,6 +23,10 @@ import model.OrderDtl;
 @ManagedBean(name = "homeController")
 public class HomeController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CustomDao cursor = new CustomDao();
 	private List<Bay> bays;
 	private List<Device> deviceList;
@@ -51,8 +55,8 @@ public class HomeController implements Serializable {
 				StringBuilder sb = new StringBuilder();
 				sb.append("SELECT od ");
 				sb.append("from OrderDtl od ");
-				sb.append("WHERE bayId =  ");
-				sb.append(b.getBayId());
+				sb.append("WHERE od.productId =  ");
+				sb.append(b.getProductId());
 				
 				sb.append("  ");
 				for (Object o : cursor.getListByQuery(new OrderDtl(), sb.toString())) {
@@ -70,7 +74,7 @@ public class HomeController implements Serializable {
 
 	}
 	
-	public void changeOrder(Bay b, int id) {
+	public void changeOrder(Bay b, int id, int index) {
 		for (OrderDtl od :b.getOrders())
 		{
 			if(od.getOrderId() == id)
@@ -79,8 +83,14 @@ public class HomeController implements Serializable {
 			}
 		}
 				
+		StringBuilder sb = new StringBuilder();
 		
-		PrimeFaces.current().ajax().update("form:baySection");
+		sb.append("form:bb:");
+		sb.append(index);
+		sb.append(":section");
+		
+		
+		PrimeFaces.current().ajax().update(sb.toString());
 		
 	}
 
