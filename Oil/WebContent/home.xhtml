@@ -63,7 +63,7 @@
 						<ui:repeat value="#{homeController.bays}" var="bay" id="bb"
 							varStatus="index">
 
-							<p:poll interval="1" listener="#{bay.check}" autoStart="false"
+							<p:poll interval="1" listener="#{bay.check}" autoStart="false" 
 								widgetVar="poll#{index.index}" />
 							<td><h:panelGroup styleClass="bay_#{bay.id}" id="section">
 									<div class="row" id="bay_#{bay.id}">

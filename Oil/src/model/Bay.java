@@ -1,20 +1,15 @@
 package model;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 import javax.persistence.Column;
@@ -24,7 +19,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.swing.Timer;
 
 import org.primefaces.PrimeFaces;
 
@@ -93,12 +87,17 @@ public class Bay implements Serializable {
 		int port = 7734;
 		byte[] buff = new byte[10000];
 		buff[0] = 0x02;
+		StringBuilder cmd = new StringBuilder();
+		cmd.append("0");
+		cmd.append(this.armId);
+		cmd.append("SB ");
+		cmd.append(getSelectedOrder().getOrderVolume());
 
 		try (Socket socket = new Socket(this.ip, port)) {
 
 			OutputStream output = socket.getOutputStream();
 			DataOutputStream dos = new DataOutputStream(output);
-			byte[] b = command.getBytes(StandardCharsets.UTF_8);
+			byte[] b = cmd.toString().getBytes(StandardCharsets.UTF_8);
 
 			for (int i = 0; i < b.length; i++) {
 				buff[i + 1] = b[i];
@@ -130,58 +129,167 @@ public class Bay implements Serializable {
 			lastResponse = e.getMessage();
 			e.printStackTrace();
 			this.response = lastResponse;
+		} finally {
+			StringBuilder sb = new StringBuilder();
+			sb.append("form:bb:");
+			sb.append(this.id - 1);
+			sb.append(":section");
+
+			StringBuilder ssb = new StringBuilder();
+			ssb.append("PF('pb");
+			ssb.append(this.id - 1);
+			ssb.append("').getJQ().show();");
+
+			StringBuilder ssbb = new StringBuilder();
+			ssbb.append("PF('poll");
+			ssbb.append(this.id - 1);
+			ssbb.append("').start();");
+
+			PrimeFaces.current().ajax().update(sb.toString());
+			PrimeFaces.current().executeScript(ssb.toString());
+			PrimeFaces.current().executeScript(ssbb.toString());
+			PrimeFaces.current().executeScript("alert('" + cmd.toString() + ":" + lastResponse + "');");
+			PrimeFaces.current().executeScript("alert('" + cmd.toString() + ":" + lastResponse + "');");
+
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(this.id - 1);
-		sb.append(":section");
-
-		StringBuilder ssb = new StringBuilder();
-		ssb.append("PF('pb");
-		ssb.append(this.id - 1);
-		ssb.append("').getJQ().show();");
-
-		StringBuilder ssbb = new StringBuilder();
-		ssbb.append("PF('poll");
-		ssbb.append(this.id - 1);
-		ssbb.append("').start();");
-
-		PrimeFaces.current().ajax().update(sb.toString());
-		PrimeFaces.current().executeScript(ssb.toString());
-		PrimeFaces.current().executeScript(ssbb.toString());
 
 	}
 
 	public void stop() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(this.id - 1);
-		sb.append(":section");
+		String lastResponse = "";
+		int port = 7734;
+		byte[] buff = new byte[10000];
+		buff[0] = 0x02;
+		StringBuilder cmd = new StringBuilder();
+		cmd.append("0");
+		cmd.append(this.armId);
+		cmd.append("ST ");
 
-		StringBuilder ssb = new StringBuilder();
-		ssb.append("PF('pb");
-		ssb.append(this.id - 1);
-		ssb.append("').getJQ().hide();");
+		try (Socket socket = new Socket(this.ip, port)) {
 
-		StringBuilder ssbb = new StringBuilder();
-		ssbb.append("PF('poll");
-		ssbb.append(this.id - 1);
-		ssbb.append("').stop();");
+			OutputStream output = socket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(output);
+			byte[] b = cmd.toString().getBytes(StandardCharsets.UTF_8);
 
-		PrimeFaces.current().ajax().update(sb.toString());
-		PrimeFaces.current().executeScript(ssb.toString());
-		PrimeFaces.current().executeScript(ssbb.toString());
+			for (int i = 0; i < b.length; i++) {
+				buff[i + 1] = b[i];
+			}
+			buff[b.length + 1] = 0x03;
+
+			dos.write(buff, 0, b.length + 2);
+			Thread.sleep(1000);
+
+			byte[] data = new byte[socket.getInputStream().available()];
+			int bytes = socket.getInputStream().read(data, 0, data.length);
+			String responseData = new String(data, 0, bytes, "ASCII");
+			lastResponse = responseData;
+
+		} catch (UnknownHostException ex) {
+
+			lastResponse = ex.getMessage();
+
+		} catch (IOException ex) {
+
+			System.out.println("I/O error: " + ex.getMessage());
+			lastResponse = ex.getMessage();
+
+		} catch (InterruptedException e) {
+
+			// TODO Auto-generated catch block
+			lastResponse = e.getMessage();
+			e.printStackTrace();
+
+		} finally {
+			StringBuilder sb = new StringBuilder();
+			sb.append("form:bb:");
+			sb.append(this.id - 1);
+			sb.append(":section");
+
+			StringBuilder ssb = new StringBuilder();
+			ssb.append("PF('pb");
+			ssb.append(this.id - 1);
+			ssb.append("').getJQ().hide();");
+
+			StringBuilder ssbb = new StringBuilder();
+			ssbb.append("PF('poll");
+			ssbb.append(this.id - 1);
+			ssbb.append("').stop();");
+
+			PrimeFaces.current().ajax().update(sb.toString());
+			PrimeFaces.current().executeScript(ssb.toString());
+			PrimeFaces.current().executeScript(ssbb.toString());
+			PrimeFaces.current().executeScript("alert('" + cmd.toString() + ":" + lastResponse + "');");
+
+		}
 
 	}
 
 	public void check() {
-		System.out.println("i am here");
-		this.response = Integer.toString(new Date().getSeconds());
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(this.id - 1);
-		sb.append(":section");
-		PrimeFaces.current().ajax().update(sb.toString());
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("i am here in function ");
+		String lastResponse = "";
+		int port = 7734;
+		byte[] buff = new byte[10000];
+		buff[0] = 0x02;
+		StringBuilder cmd = new StringBuilder();
+		cmd.append("0");
+		cmd.append(this.armId);
+		cmd.append("EB ");
+		
+		try (Socket socket = new Socket(this.ip, port)) {
+
+			OutputStream output = socket.getOutputStream();
+			DataOutputStream dos = new DataOutputStream(output);
+			byte[] b = cmd.toString().getBytes(StandardCharsets.UTF_8);
+
+			for (int i = 0; i < b.length; i++) {
+				buff[i + 1] = b[i];
+			}
+			buff[b.length + 1] = 0x03;
+
+			dos.write(buff, 0, b.length + 2);
+			Thread.sleep(1000);
+
+			byte[] data = new byte[socket.getInputStream().available()];
+			int bytes = socket.getInputStream().read(data, 0, data.length);
+			String responseData = new String(data, 0, bytes, "ASCII");
+			lastResponse = responseData;
+
+		} catch (UnknownHostException ex) {
+
+			lastResponse = ex.getMessage();
+
+		} catch (IOException ex) {
+
+			System.out.println("I/O error: " + ex.getMessage());
+			lastResponse = ex.getMessage();
+
+		} catch (InterruptedException e) {
+
+			// TODO Auto-generated catch block
+			lastResponse = e.getMessage();
+			e.printStackTrace();
+
+		} finally {
+			
+			this.response = lastResponse;
+			StringBuilder sb = new StringBuilder();
+			sb.append("form:bb:");
+			sb.append(this.id - 1);
+			sb.append(":section");
+
+			PrimeFaces.current().executeScript("alert('" + this.response + "');");
+
+
+			PrimeFaces.current().ajax().update(sb.toString());
+
+		}
+
 	}
 
 	public int getId() {
