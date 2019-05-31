@@ -9,7 +9,7 @@ import javax.faces.bean.SessionScoped;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
-import model.Bay;
+import model.Tank;
 import model.User;
 
 @SessionScoped
@@ -21,7 +21,7 @@ public class AdminController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<Bay> bays;
+	private List<Tank> bays;
 	private List<User> users;
 	private CustomDao cursor = new CustomDao();
 	private User cursorUser = new User();
@@ -33,8 +33,8 @@ public class AdminController implements Serializable {
 	public void initData() {
 		try {
 			getBays().clear();
-			for (Object o : cursor.getList(new Bay())) {
-				Bay b = (Bay) o;
+			for (Object o : cursor.getList(new Tank())) {
+				Tank b = (Tank) o;
 				this.bays.add(b);
 			}
 			getUsers().clear();
@@ -52,7 +52,7 @@ public class AdminController implements Serializable {
 		}
 	}
 
-	public void saveBayConfig(Bay bay) {
+	public void saveBayConfig(Tank bay) {
 		try {
 			cursor.update(bay);
 		} catch (Exception ex) {
@@ -103,14 +103,14 @@ public class AdminController implements Serializable {
 		PrimeFaces.current().ajax().update("form:userSection");
 	}
 
-	public List<Bay> getBays() {
+	public List<Tank> getBays() {
 		if (bays == null)
-			bays = new ArrayList<Bay>();
+			bays = new ArrayList<Tank>();
 
 		return bays;
 	}
 
-	public void setBays(List<Bay> bays) {
+	public void setBays(List<Tank> bays) {
 		this.bays = bays;
 	}
 

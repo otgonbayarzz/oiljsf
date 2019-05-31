@@ -1,3 +1,72 @@
+-----------------------------------DeliveryOrder------------------------------------------------
+create table `DeliveryOrder` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`deliverOrderId` int(11), 
+`vehicleNo` varchar(20),
+`driverName` varchar(50),
+`deliveryOrderDate` DATETIME,
+`trailerNo` varchar(20),
+`compartmentSequence` int(11),
+`capacity` int(11),
+`productId` int(11),
+`shippedDate` DATETIME,
+`tankId` int(11),
+`armId` int(11),
+`temprature` int(11),
+`density` FLOAT,
+`armStartMetr` FLOAT,
+`armEndMetr` FLOAT,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+------------------------Arm---------------------------------------------
+CREATE TABLE `Arm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `armId` int(11) DEFAULT NULL,
+  `armName` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+-----------------------Tank----------------------------------------
+CREATE TABLE `Tank` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tankId` int(11) DEFAULT NULL,
+  `tankName` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `productId` int(11) DEFAULT NULL,
+  `ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--------------------Product--------------------------
+CREATE TABLE `Product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `productName` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+----------------TankArmMap----------------------------
+CREATE TABLE `TankArmMap` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tankId` int(11) DEFAULT NULL,
+  `armId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-------------------------User----------------------
+CREATE TABLE `User` (
+  `userName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `adminStatus` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--------------Old table---------------------
 CREATE TABLE `Bay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `armId` int(11) DEFAULT 0,
@@ -30,12 +99,3 @@ CREATE TABLE `OrderDtl` (
 багана нэмэгдэнэ
 
 ------------------------------------------
-
-
-CREATE TABLE `User` (
-  `userName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `password` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `adminStatus` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

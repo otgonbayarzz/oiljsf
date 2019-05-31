@@ -23,8 +23,8 @@ import javax.persistence.Transient;
 import org.primefaces.PrimeFaces;
 
 @Entity
-@Table(name = "Bay")
-public class Bay implements Serializable {
+@Table(name = "Tank")
+public class Tank implements Serializable {
 
 	/**
 	 * 
@@ -36,8 +36,8 @@ public class Bay implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	@Column(name = "bayId")
-	private int bayId;
+	@Column(name = "tankId")
+	private int tankId;
 
 	@Column(name = "armId")
 	private int armId;
@@ -396,13 +396,6 @@ public class Bay implements Serializable {
 		this.selectedOrder = selectedOrder;
 	}
 
-	public int getBayId() {
-		return bayId;
-	}
-
-	public void setBayId(int bayId) {
-		this.bayId = bayId;
-	}
 
 	public int getSelectedOrderId() {
 		return selectedOrderId;

@@ -15,7 +15,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
-import model.Bay;
+import model.Tank;
 import model.Device;
 import model.OrderDtl;
 
@@ -28,7 +28,7 @@ public class HomeController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private CustomDao cursor = new CustomDao();
-	private List<Bay> bays;
+	private List<Tank> bays;
 	private List<Device> deviceList;
 
 	private String tempIp;
@@ -45,12 +45,12 @@ public class HomeController implements Serializable {
 
 			getBays();
 			getBays().clear();
-			for (Object o : cursor.getList(new Bay())) {
-				Bay b = (Bay) o;
+			for (Object o : cursor.getList(new Tank())) {
+				Tank b = (Tank) o;
 				this.bays.add(b);
 			}
 
-			for (Bay b : bays) {
+			for (Tank b : bays) {
 				b.getOrders().clear();
 				StringBuilder sb = new StringBuilder();
 				sb.append("SELECT od ");
@@ -74,7 +74,7 @@ public class HomeController implements Serializable {
 
 	}
 	
-	public void changeOrder(Bay b, int id, int index) {
+	public void changeOrder(Tank b, int id, int index) {
 		for (OrderDtl od :b.getOrders())
 		{
 			if(od.getOrderId() == id)
@@ -160,14 +160,14 @@ public class HomeController implements Serializable {
 		this.dd = dd;
 	}
 
-	public List<Bay> getBays() {
+	public List<Tank> getBays() {
 		if (bays == null)
-			bays = new ArrayList<Bay>();
+			bays = new ArrayList<Tank>();
 
 		return bays;
 	}
 
-	public void setBays(List<Bay> bays) {
+	public void setBays(List<Tank> bays) {
 		this.bays = bays;
 	}
 
