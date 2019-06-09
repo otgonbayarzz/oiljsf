@@ -39,14 +39,11 @@ public class Tank implements Serializable {
 	@Column(name = "tankId")
 	private int tankId;
 
-	@Column(name = "armId")
+	@Transient
 	private int armId;
 
-	/**
-	 * 1 - Active 0 - Inactive
-	 */
-	@Column(name = "status")
-	private int status;
+	@Column(name = "tankName")
+	private String tankName;
 
 	@Column(name = "productId")
 	private int productId;
@@ -54,11 +51,17 @@ public class Tank implements Serializable {
 	/**
 	 * 1 - Automatic 0 - manual
 	 */
-	@Column(name = "controlType")
+	@Transient
 	private int controlType;
 
 	@Column(name = "ip")
 	private String ip;
+
+	/**
+	 * 1 - Active 0 - Inactive
+	 */
+	@Transient
+	private int status;
 
 	@Transient
 	private boolean active;
@@ -67,10 +70,10 @@ public class Tank implements Serializable {
 	private boolean automatic;
 
 	@Transient
-	private List<OrderDtl> orders;
+	private List<DeliveryOrder> orders;
 
 	@Transient
-	private OrderDtl selectedOrder;
+	private DeliveryOrder selectedOrder;
 
 	@Transient
 	private int selectedOrderId;
@@ -80,6 +83,12 @@ public class Tank implements Serializable {
 
 	@Transient
 	private String response;
+
+	@Transient
+	private String productName;
+
+	@Transient
+	private List<Arm> arms;
 
 	public void start() {
 
@@ -91,7 +100,7 @@ public class Tank implements Serializable {
 		cmd.append("0");
 		cmd.append(this.armId);
 		cmd.append("SB ");
-		cmd.append(getSelectedOrder().getOrderVolume());
+		cmd.append(getSelectedOrder().getCapacity());
 
 		try (Socket socket = new Socket(this.ip, port)) {
 
@@ -240,7 +249,7 @@ public class Tank implements Serializable {
 		cmd.append("0");
 		cmd.append(this.armId);
 		cmd.append("EB ");
-		
+
 		try (Socket socket = new Socket(this.ip, port)) {
 
 			OutputStream output = socket.getOutputStream();
@@ -276,7 +285,7 @@ public class Tank implements Serializable {
 			e.printStackTrace();
 
 		} finally {
-			
+
 			this.response = lastResponse;
 			StringBuilder sb = new StringBuilder();
 			sb.append("form:bb:");
@@ -284,7 +293,6 @@ public class Tank implements Serializable {
 			sb.append(":section");
 
 			PrimeFaces.current().executeScript("alert('" + this.response + "');");
-
 
 			PrimeFaces.current().ajax().update(sb.toString());
 
@@ -333,6 +341,8 @@ public class Tank implements Serializable {
 	}
 
 	public String getIp() {
+		if (ip == null)
+			ip = "";
 		return ip;
 	}
 
@@ -372,30 +382,29 @@ public class Tank implements Serializable {
 		this.automatic = automatic;
 	}
 
-	public List<OrderDtl> getOrders() {
+	public List<DeliveryOrder> getOrders() {
 		if (orders == null)
-			orders = new ArrayList<OrderDtl>();
+			orders = new ArrayList<DeliveryOrder>();
 		return orders;
 	}
 
-	public void setOrders(List<OrderDtl> orders) {
+	public void setOrders(List<DeliveryOrder> orders) {
 		this.orders = orders;
 	}
 
-	public OrderDtl getSelectedOrder() {
+	public DeliveryOrder getSelectedOrder() {
 		if (selectedOrder == null)
 			if (getOrders().size() > 0)
 				selectedOrder = orders.get(0);
 			else
-				selectedOrder = new OrderDtl();
+				selectedOrder = new DeliveryOrder();
 
 		return selectedOrder;
 	}
 
-	public void setSelectedOrder(OrderDtl selectedOrder) {
+	public void setSelectedOrder(DeliveryOrder selectedOrder) {
 		this.selectedOrder = selectedOrder;
 	}
-
 
 	public int getSelectedOrderId() {
 		return selectedOrderId;
@@ -419,6 +428,42 @@ public class Tank implements Serializable {
 
 	public void setResponse(String response) {
 		this.response = response;
+	}
+
+	public int getTankId() {
+		return tankId;
+	}
+
+	public void setTankId(int tankId) {
+		this.tankId = tankId;
+	}
+
+	public String getTankName() {
+		return tankName;
+	}
+
+	public void setTankName(String tankName) {
+		this.tankName = tankName;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<Arm> getArms() {
+		return arms;
+	}
+
+	public void setArms(List<Arm> arms) {
+		this.arms = arms;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 }

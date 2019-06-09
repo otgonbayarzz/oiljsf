@@ -5,21 +5,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
 import model.Tank;
+import model.TankArmMap;
 import model.Device;
-import model.OrderDtl;
+import model.Product;
+import model.Arm;
+import model.DeliveryOrder;
 
-@ViewScoped
+@SessionScoped
 @ManagedBean(name = "homeController")
 public class HomeController implements Serializable {
 
@@ -28,11 +27,9 @@ public class HomeController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private CustomDao cursor = new CustomDao();
-	private List<Tank> bays;
-	private List<Device> deviceList;
+	private List<Tank> tanks;
+	private List<Product> products;
 
-	private String tempIp;
-	private int tempPort;
 	private String tempCommand;
 	public Date dd = new Date();
 
@@ -43,25 +40,65 @@ public class HomeController implements Serializable {
 	public void initData() {
 		try {
 
-			getBays();
-			getBays().clear();
+			getTanks().clear();
+			getProducts().clear();
+
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
-				this.bays.add(b);
+				this.tanks.add(b);
 			}
 
-			for (Tank b : bays) {
+			for (Object o : cursor.getList(new Product())) {
+				Product p = (Product) o;
+				products.add(p);
+			}
+
+			for (Tank b : tanks) {
 				b.getOrders().clear();
 				StringBuilder sb = new StringBuilder();
 				sb.append("SELECT od ");
-				sb.append("from OrderDtl od ");
+				sb.append("from DeliveryOrder od ");
 				sb.append("WHERE od.productId =  ");
 				sb.append(b.getProductId());
-				
+
 				sb.append("  ");
-				for (Object o : cursor.getListByQuery(new OrderDtl(), sb.toString())) {
-					OrderDtl od = (OrderDtl) o;
+				for (Object o : cursor.getListByQuery(new DeliveryOrder(), sb.toString())) {
+					DeliveryOrder od = (DeliveryOrder) o;
 					b.getOrders().add(od);
+				}
+
+			}
+			for (Tank t : tanks) {
+				t.setArms(new ArrayList<Arm>());
+				t.getArms().clear();
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT  tam  ");
+				sb.append("FROM TankArmMap  tam ");
+				sb.append("WHERE tam.tankId =  ");
+				sb.append(t.getTankId());
+				sb.append(" ");
+
+				List<Object> ol = new ArrayList<Object>();
+
+				ol = cursor.getListByQuery(new Arm(), sb.toString());
+
+				if (ol != null && ol.size() > 0) {
+					for (Object o : cursor.getListByQuery(new TankArmMap(), sb.toString())) {
+						TankArmMap tam = (TankArmMap) o;
+						Arm a = new Arm();
+						a.setMapId(tam.getId());
+						a.setArmId(tam.getArmId());
+						a.setArmNo(tam.getArmNo());
+						t.getArms().add(a);
+					}
+				} else {
+
+					System.out.println("ADDING DUMMY");
+					Arm a = new Arm();
+					a.setMapId(0);
+					t.getArms().add(a);
+
 				}
 
 			}
@@ -73,32 +110,21 @@ public class HomeController implements Serializable {
 		PrimeFaces.current().ajax().update("form:baySection");
 
 	}
-	
+
 	public void changeOrder(Tank b, int id, int index) {
-		for (OrderDtl od :b.getOrders())
-		{
-			if(od.getOrderId() == id)
-			{
+		for (DeliveryOrder od : b.getOrders()) {
+			if (od.getId() == id) {
 				b.setSelectedOrder(od);
 			}
 		}
-				
+
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("form:bb:");
 		sb.append(index);
 		sb.append(":section");
-		
-		
-		PrimeFaces.current().ajax().update(sb.toString());
-		
-	}
 
-	public void addDevice() {
-		Device d = new Device(this.tempIp, this.tempPort);
-		deviceList.add(d);
-		this.tempIp = "";
-		this.tempPort = 0;
+		PrimeFaces.current().ajax().update(sb.toString());
 
 	}
 
@@ -111,64 +137,37 @@ public class HomeController implements Serializable {
 		}
 	}
 
-	public List<Device> getDeviceList() {
-		if (deviceList == null)
-			deviceList = new ArrayList<Device>();
+	public String productName(int productId) {
+		String ret = "";
+		for (Product p : getProducts()) {
+			if (productId == p.getProductId()) {
+				ret = p.getProductName();
+				return ret;
+			}
+		}
 
-		return deviceList;
+		return ret;
+
 	}
 
-	public void setDeviceList(List<Device> deviceList) {
-		this.deviceList = deviceList;
+	public List<Tank> getTanks() {
+		if (tanks == null)
+			tanks = new ArrayList<Tank>();
+		return tanks;
 	}
 
-	public String getTempIp() {
-		if (tempIp == null)
-			tempIp = "";
-		return tempIp;
+	public void setTanks(List<Tank> tanks) {
+		this.tanks = tanks;
 	}
 
-	public void setTempIp(String tempIp) {
-		this.tempIp = tempIp;
+	public List<Product> getProducts() {
+		if (products == null)
+			products = new ArrayList<Product>();
+		return products;
 	}
 
-	public int getTempPort() {
-		return tempPort;
-	}
-
-	public void setTempPort(int tempPort) {
-		this.tempPort = tempPort;
-	}
-
-	public String getTempCommand() {
-		if (tempCommand == null)
-			tempCommand = "";
-		return tempCommand;
-	}
-
-	public void setTempCommand(String tempCommand) {
-		this.tempCommand = tempCommand;
-	}
-
-	public Date getDd() {
-		if (dd == null)
-			dd = new Date();
-		return dd;
-	}
-
-	public void setDd(Date dd) {
-		this.dd = dd;
-	}
-
-	public List<Tank> getBays() {
-		if (bays == null)
-			bays = new ArrayList<Tank>();
-
-		return bays;
-	}
-
-	public void setBays(List<Tank> bays) {
-		this.bays = bays;
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
 
 }

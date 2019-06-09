@@ -9,8 +9,7 @@ import javax.faces.bean.SessionScoped;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
-import model.Tank;
-import model.User;
+import model.*;
 
 @SessionScoped
 @ManagedBean(name = "adminController")
@@ -18,11 +17,14 @@ import model.User;
 public class AdminController implements Serializable {
 
 	/**
-	 * 
+	 * Admin view-n datag udirdah heseg
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<Tank> bays;
+	private List<Tank> tanks;
 	private List<User> users;
+
+	private List<Product> products;
+	private List<Arm> arms;
 	private CustomDao cursor = new CustomDao();
 	private User cursorUser = new User();
 
@@ -31,11 +33,62 @@ public class AdminController implements Serializable {
 	}
 
 	public void initData() {
+
 		try {
-			getBays().clear();
+
+			getTanks().clear();
+			getArms().clear();
+			getProducts().clear();
+
+			for (Object o : cursor.getList(new Arm())) {
+				Arm a = (Arm) o;
+				arms.add(a);
+
+			}
+			for (Object o : cursor.getList(new Product())) {
+				Product p = (Product) o;
+				products.add(p);
+			}
+			
+
 			for (Object o : cursor.getList(new Tank())) {
-				Tank b = (Tank) o;
-				this.bays.add(b);
+				Tank t = (Tank) o;
+				this.tanks.add(t);
+
+			}
+			for (Tank t : tanks) {
+				t.setArms(new ArrayList<Arm>());
+				t.getArms().clear();
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT  tam  ");
+				sb.append("FROM TankArmMap  tam ");
+				sb.append("WHERE tam.tankId =  ");
+				sb.append(t.getTankId());
+				sb.append(" ");
+
+				List<Object> ol = new ArrayList<Object>();
+
+				ol = cursor.getListByQuery(new Arm(), sb.toString());
+
+				if (ol != null && ol.size() > 0) {
+					for (Object o : cursor.getListByQuery(new TankArmMap(), sb.toString())) {
+						TankArmMap tam = (TankArmMap) o;
+						Arm a = new Arm();
+						a.setMapId(tam.getId());
+						a.setArmId(tam.getArmId());
+						a.setArmNo(tam.getArmNo());
+						t.getArms().add(a);
+					}
+				} else {
+
+					System.out.println("ADDING DUMMY");
+					Arm a = new Arm();
+					a.setMapId(0);
+					t.getArms().add(a);
+
+				}
+
 			}
 			getUsers().clear();
 			for (Object ob : cursor.getList(new User())) {
@@ -52,9 +105,22 @@ public class AdminController implements Serializable {
 		}
 	}
 
-	public void saveBayConfig(Tank bay) {
+	public void saveTankConfig(Tank tank) {
 		try {
-			cursor.update(bay);
+			cursor.update(tank);
+			for (Arm a : tank.getArms()) {
+				TankArmMap tam = new TankArmMap();
+				tam.setTankId(tank.getTankId());
+				tam.setArmId(a.getArmId());
+				tam.setArmNo(a.getArmNo());
+				tam.setId(a.getMapId());
+				if (tam.getId() == 0)
+					cursor.insert(tam);
+				else
+					cursor.update(tam);
+
+			}
+
 		} catch (Exception ex) {
 			System.out.println("error occured while getting data saveBay..");
 			ex.printStackTrace();
@@ -96,6 +162,19 @@ public class AdminController implements Serializable {
 
 	}
 
+	public String productName(int productId) {
+		String ret = "";
+		for (Product p : getProducts()) {
+			if (productId == p.getProductId()) {
+				ret = p.getProductName();
+				return ret;
+			}
+		}
+
+		return ret;
+
+	}
+
 	public void addUser() {
 		getUsers();
 		User u = new User();
@@ -103,15 +182,14 @@ public class AdminController implements Serializable {
 		PrimeFaces.current().ajax().update("form:userSection");
 	}
 
-	public List<Tank> getBays() {
-		if (bays == null)
-			bays = new ArrayList<Tank>();
-
-		return bays;
+	public List<Tank> getTanks() {
+		if (tanks == null)
+			tanks = new ArrayList<Tank>();
+		return tanks;
 	}
 
-	public void setBays(List<Tank> bays) {
-		this.bays = bays;
+	public void setTanks(List<Tank> tanks) {
+		this.tanks = tanks;
 	}
 
 	public List<User> getUsers() {
@@ -146,6 +224,33 @@ public class AdminController implements Serializable {
 
 	public void setCursorUser(User cursorUser) {
 		this.cursorUser = cursorUser;
+	}
+
+	public List<Arm> getArms() {
+		if (arms == null) {
+			arms = new ArrayList<Arm>();
+
+		}
+
+		return arms;
+	}
+
+	public void setArms(List<Arm> arms) {
+		this.arms = arms;
+	}
+
+	public List<Product> getProducts() {
+
+		if (products == null) {
+			products = new ArrayList<Product>();
+
+		}
+
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
 
 }

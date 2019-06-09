@@ -45,9 +45,6 @@ public class CustomDao {
 
 		Session session = null;
 
-		String tableName = o.getClass().getName().replace("model.", "");
-		System.out.println("I AM HERE WITH" + tableName);
-
 		List<Object> retList = null;
 
 		try {

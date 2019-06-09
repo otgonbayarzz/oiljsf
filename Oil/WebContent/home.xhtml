@@ -38,70 +38,83 @@
 						<td colspan="2">
 							<div class="row">
 								<!-- Bay Info -->
-								<div class="col-sm-12 sm-height boldoo">Bay no</div>
-								<div class="col-sm-12 sm-height boldoo">Bay Status</div>
-								<div class="col-sm-12 sm-height boldoo">Product Type</div>
+								<div class="col-sm-12 sm-height boldoo">Танкын нэр</div>
+								<div class="col-sm-12 sm-height boldoo">Бүтээгдэхүүний нэр</div>
 
 								<!-- Order info -->
-								<div class="col-sm-12 sm-height boldoo ">Order ID</div>
-								<div class="col-sm-12 sm-height boldoo">Vehicle ID</div>
-								<div class="col-sm-12 sm-height boldoo">Product ID</div>
-								<div class="col-sm-12 sm-height boldoo">Order Volume</div>
-								<div class="col-sm-12 sm-height boldoo">Compartment Count</div>
-								<div class="col-sm-12 sm-height boldoo">Compartment ID</div>
-								<div class="col-sm-12 sm-height boldoo">Compartment
-									Capacity</div>
+								
+								<div class="col-sm-12 sm-height boldoo ">Захиалга</div>
+								<div class="col-sm-12 sm-height boldoo ">Гар сонгох</div>
+								<div class="col-sm-12 sm-height boldoo">Машины дугаар</div>
+								<div class="col-sm-12 sm-height boldoo">Жолоочийн нэр</div>
+								<div class="col-sm-12 sm-height boldoo">Хэмжээ</div>
+								<div class="col-sm-12 sm-height boldoo">Тасалгаа</div>
+								<div class="col-sm-12 sm-height boldoo">Захиалсан огноо</div>
+
+
 								<!-- Loading info -->
 								<div class="col-sm-12 sm-height boldoo">Load Status</div>
 								<div class="col-sm-12 sm-height boldoo">Loading Volume</div>
-								<div class="col-sm-12 sm-height boldoo">Flow Rate</div>
 								<div class="col-sm-12 sm-height boldoo">Temperature</div>
 								<div class="col-sm-12 sm-height boldoo">Density</div>
 
 							</div>
 						</td>
-						<ui:repeat value="#{homeController.bays}" var="bay" id="bb"
+						<ui:repeat value="#{homeController.tanks}" var="tank" id="bb"
 							varStatus="index">
 
-							<p:poll interval="1" listener="#{bay.check}" autoStart="false" 
+							<p:poll interval="1" listener="#{tank.check}" autoStart="false"
 								widgetVar="poll#{index.index}" />
 							<td><h:panelGroup styleClass="bay_#{bay.id}" id="section">
 									<div class="row" id="bay_#{bay.id}">
 										<!-- Bay no -->
-										<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
-										<!-- Bay status -->
-										<div class="col-sm-12 sm-height boldoo">#{bay.active ==
-											true ? 'Active' : 'Inactive' }</div>
+										<div class="col-sm-12 sm-height boldoo">#{tank.tankName}</div>
 										<!-- Product Type -->
-										<div class="col-sm-12 sm-height boldoo">#{bay.productId}</div>
+										<div class="col-sm-12 sm-height boldoo">#{homeController.productName(tank.productId)}</div>
+
+
 										<!-- Order no -->
 										<div class="col-sm-12">
 											<h:selectOneMenu styleClass="form-control form-control-sm"
-												label="#{bay.selectedOrderId} - #{bay.selectedOrder.vehicleId} - #{bay.selectedOrder.compartmentNo} - #{bay.selectedOrder.orderVolume}"
-												value="#{bay.selectedOrderId}" disabled="#{!bay.active}">
-												<f:selectItems value="#{bay.orders}" var="o"
-													itemLabel="OrNo: #{o.orderId},  TrNo: #{o.vehicleId},  CompNo: #{o.compartmentNo},  Cap: #{o.orderVolume}" itemValue="#{o.orderId}">
+												value="#{tank.selectedOrderId}">
+												<f:selectItems value="#{tank.orders}" var="o"
+													itemLabel="ЗД: #{o.deliveryOrderId},  МашинДугаар: #{o.vehicleNo},  Тасалгаа: #{o.compartmentSequence},  Хэмжээ: #{o.capacity}"
+													itemValue="#{o.id}">
 												</f:selectItems>
 												<p:ajax event="change"
-													listener="#{homeController.changeOrder(bay, bay.selectedOrderId, index.index)}"></p:ajax>
+													listener="#{homeController.changeOrder(tank, tank.selectedOrderId, index.index)}"></p:ajax>
 											</h:selectOneMenu>
 										</div>
-										<!-- Vehicle ID -->
+										
+										<!-- Pick arm -->
 										<div class="col-sm-12">
-											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.vehicleId}" />
+
+											<h:selectOneMenu value="#{tank.selectedOrder.armId}"
+												styleClass="form-control form-control-sm">
+
+												<f:selectItems value="#{adminController.arms}" var="a"
+													itemLabel="#{a.armName}" itemValue="#{a.armId}">
+												</f:selectItems>
+
+											</h:selectOneMenu>
 										</div>
 
-										<!-- Product ID -->
+										<!-- Vehicle No -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.productId}" />
+												disabled="true" value="#{tank.selectedOrder.vehicleNo}" />
+										</div>
+
+										<!-- Driver Name -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm"
+												disabled="true" value="#{tank.selectedOrder.driverName}" />
 										</div>
 
 										<!-- Order Volume -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.orderVolume}" />
+												disabled="true" value="#{bay.selectedOrder.capacity}" />
 										</div>
 										<!-- Order Volume -->
 										<div class="col-sm-12">
@@ -111,64 +124,62 @@
 										<!-- Compartment Count -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.compartmentNo}" />
+												disabled="true"
+												value="#{bay.selectedOrder.compartmentSequence}" />
 										</div>
-										<!-- Compartment ID -->
+										<!-- Order Date -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" />
-
-
+												disabled="true"
+												value="#{bay.selectedOrder.deliveryOrderDate}" />
 										</div>
-										<!-- Compartment Capacity -->
-										<div class="col-sm-12">
-											<h:inputText styleClass="form-control form-control-sm" />
-										</div>
+
 
 										<!-- Load Status -->
 										<div class="col-sm-6">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="start" actionListener="#{bay.start}"
-												disabled="#{!bay.active}">
+												value="start" actionListener="#{tank.start}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
 										<div class="col-sm-6">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="next" disabled="#{!bay.active}"
-												actionListener="#{bay.stop}">
+												value="next" actionListener="#{tank.stop}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
 
+										<div class="col-sm-12">
+											<p:progressBar widgetVar="pb#{index.index}" />
+										</div>
+
 										<!-- Loading Volume -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm "
-												disabled="true" value="#{bay.response}" />
-											<p:progressBar widgetVar="pb#{index.index}" />
-
+												disabled="true" value="#{tank.response}" />
 										</div>
 
 
-										<!-- Flow Rate -->
-										<div class="col-sm-12">
-											<h:inputText styleClass="form-control form-control-sm "
-												value="0 lpm" disabled="true" />
-										</div>
 
 										<!-- Temperature -->
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm "
-												value="0" disabled="true" />
+												value="#{tank.selectedOrder.temprature}" disabled="true" />
+										</div>
+
+										<!-- Flow Rate -->
+										<div class="col-sm-12">
+											<h:inputText styleClass="form-control form-control-sm "
+												value="#{tank.selectedOrder.density}" disabled="true" />
 										</div>
 
 
-										<!-- Loading Volume -->
+										<!-- STOP -->
 
 										<div class="col-sm-12">
 											<h:commandButton styleClass="btn btn-danger btn-sm"
 												value="STOP" style="width:100%" disabled="#{!bay.active}"
-												actionListener="#{bay.stop}">>
+												actionListener="#{tank.stop}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>

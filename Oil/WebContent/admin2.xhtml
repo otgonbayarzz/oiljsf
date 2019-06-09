@@ -1,94 +1,108 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" template="template.xhtml">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
-<h:panelGroup id = "baySection" >
+		<h:panelGroup id="baySection">
 
-		<div class="row text-center margin-top">
-			<div class="col-md-12">
-				<center>
-					<h3>Bay Config</h3>
-				</center>
-			</div>
-			<table class="table table-borderless">
-				<tr>
-					<td colspan="2">
-						<div class="row">
-							<!-- Bay Info -->
-							<div class="col-sm-12 sm-height boldoo">Bay no</div>
+			<div class="row text-center margin-top">
 
-							<div class="col-sm-12 sm-height boldoo">Bay Status Config</div>
-							<div class="col-sm-12 sm-height boldoo">Bay Arm no</div>
-							<div class="col-sm-12 sm-height boldoo">Bay Address Config</div>
+				<div class="col-md-12">
+					<h:commandButton styleClass="btn btn-primary btn-sm"
+						value="Мэдээлэл шинэчлэх" style="width:100%">
+						<f:ajax execute="@form" render="result" />
+					</h:commandButton>
+					<div class="col-md-12">
+						<center>
+							<h3>Танкын мэдээллйиг тохируулах</h3>
+						</center>
+					</div>
 
-							<div class="col-sm-12 sm-height boldoo ">Product Type
-								Config</div>
-							<div class="col-sm-12 sm-height boldoo">Bay Control Type
-								Config</div>
+				</div>
 
-							<div class="col-sm-12 sm-height boldoo">Хадгалах</div>
 
-						</div>
-					</td>
-					<ui:repeat value="#{adminController.bays}" var="bay">
-						<td>
+				<table class="table table-borderless">
+					<tr>
+						<td colspan="2">
 							<div class="row">
-
-								<div class="col-sm-12 sm-height boldoo">#{bay.bayId}</div>
-
-
-								<div class="col-sm-12 sm-height boldoo">
-									<h:selectBooleanCheckbox label="Active" value="#{bay.active}"> Active </h:selectBooleanCheckbox>
-								</div>
-								<div class="col-sm-12 sm-height boldoo">
-									<h:inputText styleClass="form-control form-control-sm "
-										value="#{bay.armId}" />
-								</div>
-
-								<div class="col-sm-12 sm-height boldoo">
-									<h:inputText styleClass="form-control form-control-sm "
-										value="#{bay.ip}" />
-								</div>
+								<!-- Bay Info -->
+								<div class="col-sm-12 sm-height boldoo">Нэр</div>
+								<div class="col-sm-12 sm-height boldoo ">Бүтээгдэхүүний
+									тохиргоо</div>
+								<div class="col-sm-12 sm-height boldoo">Гарны тохиргоо</div>
+								<div class="col-sm-12 sm-height boldoo">IP тохиргоо</div>
 
 
-								<div class="col-sm-12">
-									<h:selectOneMenu value="#{bay.productId}"
-										styleClass="form-control form-control-sm">
-										<f:selectItem itemLabel="АИ92" itemValue="0"></f:selectItem>
-										<f:selectItem itemLabel="АИ80" itemValue="1"></f:selectItem>
-									</h:selectOneMenu>
-								</div>
 
-								<div class="col-sm-12 sm-height boldoo">
-									<h:selectBooleanCheckbox label="active"
-										value="#{bay.automatic}"> Automatic </h:selectBooleanCheckbox>
-								</div>
-
-								<div class="col-sm-12">
-									<h:commandButton styleClass="btn btn-primary btn-sm"
-										value="Хадгалах" style="width:100%"
-										actionListener="#{adminController.saveBayConfig(bay)}"
-										update="@(.table)">
-
-										<f:ajax execute="@form" render="result" />
-									</h:commandButton>
-								</div>
+								<div class="col-sm-12 sm-height boldoo">Хадгалах</div>
 
 							</div>
 						</td>
-					</ui:repeat>
+						<ui:repeat value="#{adminController.tanks}" var="tank">
+							<td>
+								<div class="row">
 
-				</tr>
-			</table>
+									<div class="col-sm-12 sm-height boldoo">#{tank.tankName}</div>
+									<div class="col-sm-12 sm-height boldoo">#{adminController.productName(tank.productId)}</div>
+									<div class="col-sm-12 sm-height boldoo">
+										<div class="row">
+											<ui:repeat value="#{tank.arms}" var="tankArm">
+												<div class="col-md-6">
 
-		</div>
+													<h:selectOneMenu value="#{tankArm.armId}"
+														styleClass="form-control form-control-sm">
+
+														<f:selectItems value="#{adminController.arms}" var="a"
+															itemLabel="#{a.armName}" itemValue="#{a.armId}">
+														</f:selectItems>
+
+													</h:selectOneMenu>
+												</div>
+
+												<div class="col-md-6">
+													<h:selectOneMenu value="#{tankArm.armNo}"
+														styleClass="form-control form-control-sm">
+														<f:selectItem itemValue="01" itemLabel="01" />
+														<f:selectItem itemValue="02" itemLabel="02" />
+
+													</h:selectOneMenu>
+												</div>
+											</ui:repeat>
+										</div>
+									</div>
+
+									<div class="col-sm-12 sm-height boldoo">
+										<h:inputText value="#{tank.ip}"
+											styleClass="form-control form-control-sm" />
+									</div>
+
+
+									<div class="col-sm-12">
+										<h:commandButton styleClass="btn btn-primary btn-sm"
+											value="Хадгалах" style="width:100%"
+											actionListener="#{adminController.saveTankConfig(tank)}"
+											update="@(.table)">
+
+											<f:ajax execute="@form" render="result" />
+										</h:commandButton>
+									</div>
+
+								</div>
+							</td>
+						</ui:repeat>
+
+					</tr>
+				</table>
+
+			</div>
 		</h:panelGroup>
-		<h:panelGroup id = "userSection" >
+		<h:panelGroup id="userSection">
 			<div class="row">
 				<div class="col-md-12">
 					<center>
@@ -129,8 +143,9 @@
 
 					<div class="col-md-1">
 						<h:commandLink style="width:100%" update="@(.table)"
-							actionListener="#{adminController.deleteUser(usr)}" disabled="#{usr.admin}">
-							
+							actionListener="#{adminController.deleteUser(usr)}"
+							disabled="#{usr.admin}">
+
 							<i class="fas fa-trash"></i>
 							<f:ajax execute="@form" render="result" />
 
@@ -151,21 +166,23 @@
 
 			</div>
 		</h:panelGroup>
-		<h:commandButton id="loaderButton"
-			styleClass="loaderButtonClassUnique"
-			actionListener="#{adminController.initData()}" style="display:none;">
-			<f:ajax execute="@form" render="result" />
-		</h:commandButton>
 
+
+		<p:remoteCommand name="initData"
+			actionListener="#{adminController.initData}">
+
+		</p:remoteCommand>
 
 		<script>
 			//<![CDATA[
-
 			$(document).ready(function() {
-				$('.loaderButtonClassUnique')[0].onclick();
+				initData();
 
 			});
 			//]]>
 		</script>
+
+
+
 	</ui:define>
 </ui:composition>
