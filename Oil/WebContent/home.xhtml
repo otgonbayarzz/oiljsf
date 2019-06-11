@@ -38,13 +38,13 @@
 						<td colspan="2">
 							<div class="row">
 								<!-- Bay Info -->
-								<div class="col-sm-12 sm-height boldoo">Танкын нэр</div>
+								<div class="col-sm-12 sm-height boldoo">Гарны нэр</div>
 								<div class="col-sm-12 sm-height boldoo">Бүтээгдэхүүний нэр</div>
 
 								<!-- Order info -->
-								
+
 								<div class="col-sm-12 sm-height boldoo ">Захиалга</div>
-								<div class="col-sm-12 sm-height boldoo ">Гар сонгох</div>
+								<div class="col-sm-12 sm-height boldoo ">Танк сонгох</div>
 								<div class="col-sm-12 sm-height boldoo">Машины дугаар</div>
 								<div class="col-sm-12 sm-height boldoo">Жолоочийн нэр</div>
 								<div class="col-sm-12 sm-height boldoo">Хэмжээ</div>
@@ -53,124 +53,128 @@
 
 
 								<!-- Loading info -->
-								<div class="col-sm-12 sm-height boldoo">Load Status</div>
+								<div class="col-sm-12 sm-height boldoo">Command</div>
 								<div class="col-sm-12 sm-height boldoo">Loading Volume</div>
 								<div class="col-sm-12 sm-height boldoo">Temperature</div>
 								<div class="col-sm-12 sm-height boldoo">Density</div>
+								<div class="col-sm-12 sm-height boldoo">Start meter</div>
+								<div class="col-sm-12 sm-height boldoo">End meter</div>
 
 							</div>
 						</td>
-						<ui:repeat value="#{homeController.tanks}" var="tank" id="bb"
+						<ui:repeat value="#{homeController.arms}" var="arm" id="bb"
 							varStatus="index">
 
-							<p:poll interval="1" listener="#{tank.check}" autoStart="false"
-								widgetVar="poll#{index.index}" />
-							<td><h:panelGroup styleClass="bay_#{bay.id}" id="section">
-									<div class="row" id="bay_#{bay.id}">
+							<p:poll interval="1" listener="#{arm.check}" autoStart="false"
+								widgetVar="poll#{arm.id}" />
+							<td><h:panelGroup styleClass="bay_#{arm.id}" id="section">
+									<div class="row">
 										<!-- Bay no -->
-										<div class="col-sm-12 sm-height boldoo">#{tank.tankName}</div>
+										<div class="col-sm-12 sm-height boldoo">#{arm.armName}</div>
 										<!-- Product Type -->
-										<div class="col-sm-12 sm-height boldoo">#{homeController.productName(tank.productId)}</div>
-
+										<div class="col-sm-12 sm-height boldoo">#{homeController.productName(arm.productId)}</div>
 
 										<!-- Order no -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 ">
 											<h:selectOneMenu styleClass="form-control form-control-sm"
-												value="#{tank.selectedOrderId}">
-												<f:selectItems value="#{tank.orders}" var="o"
+												value="#{arm.selectedOrderId}">
+												<f:selectItems value="#{arm.orders}" var="o"
 													itemLabel="ЗД: #{o.deliveryOrderId},  МашинДугаар: #{o.vehicleNo},  Тасалгаа: #{o.compartmentSequence},  Хэмжээ: #{o.capacity}"
 													itemValue="#{o.id}">
 												</f:selectItems>
 												<p:ajax event="change"
-													listener="#{homeController.changeOrder(tank, tank.selectedOrderId, index.index)}"></p:ajax>
+													listener="#{homeController.changeOrder(arm, arm.selectedOrderId, index.index)}"></p:ajax>
 											</h:selectOneMenu>
 										</div>
-										
-										<!-- Pick arm -->
-										<div class="col-sm-12">
 
-											<h:selectOneMenu value="#{tank.selectedOrder.armId}"
+										<!-- Pick tank -->
+										<div class="col-sm-12 ">
+
+											<h:selectOneMenu value="#{arm.selectedOrder.tankId}"
 												styleClass="form-control form-control-sm">
 
-												<f:selectItems value="#{adminController.arms}" var="a"
-													itemLabel="#{a.armName}" itemValue="#{a.armId}">
+												<f:selectItems value="#{arm.armTanks}" var="at"
+													itemLabel="#{at.tankName}" itemValue="#{at.tankId}">
 												</f:selectItems>
 
 											</h:selectOneMenu>
 										</div>
 
 										<!-- Vehicle No -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{tank.selectedOrder.vehicleNo}" />
+												disabled="true" value="#{arm.selectedOrder.vehicleNo}" />
 										</div>
 
 										<!-- Driver Name -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{tank.selectedOrder.driverName}" />
+												disabled="true" value="#{arm.selectedOrder.driverName}" />
 										</div>
 
 										<!-- Order Volume -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.capacity}" />
+												disabled="true" value="#{arm.selectedOrder.capacity}" />
 										</div>
-										<!-- Order Volume -->
-										<div class="col-sm-12">
-											<h:inputText styleClass="form-control form-control-sm"
-												disabled="true" value="#{bay.selectedOrder.orderVolume}" />
-										</div>
+
 										<!-- Compartment Count -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm"
 												disabled="true"
-												value="#{bay.selectedOrder.compartmentSequence}" />
+												value="#{arm.selectedOrder.compartmentSequence}" />
 										</div>
 										<!-- Order Date -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm"
 												disabled="true"
-												value="#{bay.selectedOrder.deliveryOrderDate}" />
+												value="#{arm.selectedOrder.deliveryOrderDate}" />
 										</div>
 
 
 										<!-- Load Status -->
-										<div class="col-sm-6">
+										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="start" actionListener="#{tank.start}">
+												value="start" actionListener="#{arm.start}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
-										<div class="col-sm-6">
+										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="next" actionListener="#{tank.stop}">
+												value="next" actionListener="#{arm.next}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
 
-										<div class="col-sm-12">
-											<p:progressBar widgetVar="pb#{index.index}" />
-										</div>
-
+										
 										<!-- Loading Volume -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm "
-												disabled="true" value="#{tank.response}" />
+												disabled="true" value="#{arm.selectedOrder.fillStatus}" />
 										</div>
 
 
 
 										<!-- Temperature -->
-										<div class="col-sm-12">
+										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm "
-												value="#{tank.selectedOrder.temprature}" disabled="true" />
+												value="#{arm.selectedOrder.temprature}" disabled="true" />
 										</div>
 
 										<!-- Flow Rate -->
+										<div class="col-sm-12 sm-height">
+											<h:inputText styleClass="form-control form-control-sm "
+												value="#{arm.selectedOrder.density}" disabled="true" />
+										</div>
+
+										<div class="col-sm-12 sm-height">
+											<h:inputText styleClass="form-control form-control-sm "
+												value="#{arm.selectedOrder.armStartMetr}" disabled="true" />
+										</div>
+
 										<div class="col-sm-12">
 											<h:inputText styleClass="form-control form-control-sm "
-												value="#{tank.selectedOrder.density}" disabled="true" />
+												value="#{arm.selectedOrder.armEndMetr}" disabled="true" />
 										</div>
 
 
@@ -201,44 +205,8 @@
 		</h:panelGroup>
 		<div class="row">
 
-			<div class="col-lg-12">
-				<table class="table table-bordered">
-					<tr>
-						<th scope="col">Дугаар</th>
-						<th scope="col">Тасалгаа 1</th>
-						<th scope="col">Тасалгаа 2</th>
-						<th scope="col">Тасалгаа 3</th>
-						<th scope="col">Тасалгаа 4</th>
-						<th scope="col">Тасалгаа 5</th>
-						<th scope="col">Тасалгаа 6</th>
-						<th scope="col">Тасалгаа 7</th>
-						<th scope="col">Тасалгаа 8</th>
 
-					</tr>
-					<tr>
-						<td>8888УБА</td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-					</tr>
-					<tr>
-						<td>8888УБА</td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-						<td>500L 92</td>
-					</tr>
-				</table>
-			</div>
+
 		</div>
 		<p:remoteCommand name="initData"
 			actionListener="#{homeController.initData}">

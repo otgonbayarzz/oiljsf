@@ -65,7 +65,7 @@ public class CustomDao {
 		return retList;
 	}
 
-	public Object getByById(long id, Object o) {
+	public Object getByById(int id, Object o) {
 		Session session = null;
 		Object retObj = null;
 		try {

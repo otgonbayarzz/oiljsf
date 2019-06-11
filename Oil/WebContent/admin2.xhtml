@@ -15,12 +15,12 @@
 
 				<div class="col-md-12">
 					<h:commandButton styleClass="btn btn-primary btn-sm"
-						value="Мэдээлэл шинэчлэх" style="width:100%">
+						value="Мэдээлэл шинэчлэх" style="width:100%" actionListener="#{adminController.loadFromOilDepot}">
 						<f:ajax execute="@form" render="result" />
 					</h:commandButton>
 					<div class="col-md-12">
 						<center>
-							<h3>Танкын мэдээллйиг тохируулах</h3>
+							<h3>Гарын мэдээллйиг тохируулах</h3>
 						</center>
 					</div>
 
@@ -33,52 +33,34 @@
 							<div class="row">
 								<!-- Bay Info -->
 								<div class="col-sm-12 sm-height boldoo">Нэр</div>
-								<div class="col-sm-12 sm-height boldoo ">Бүтээгдэхүүний
-									тохиргоо</div>
-								<div class="col-sm-12 sm-height boldoo">Гарны тохиргоо</div>
+								<div class="col-sm-12 sm-height boldoo">Танкны мэдээлэл</div>
+								<div class="col-sm-12 sm-height boldoo ">Гарын дугаар</div>
 								<div class="col-sm-12 sm-height boldoo">IP тохиргоо</div>
-
-
-
 								<div class="col-sm-12 sm-height boldoo">Хадгалах</div>
 
 							</div>
 						</td>
-						<ui:repeat value="#{adminController.tanks}" var="tank">
+						<ui:repeat value="#{adminController.arms}" var="arm">
 							<td>
 								<div class="row">
 
-									<div class="col-sm-12 sm-height boldoo">#{tank.tankName}</div>
-									<div class="col-sm-12 sm-height boldoo">#{adminController.productName(tank.productId)}</div>
+									<div class="col-sm-12 sm-height boldoo">#{arm.armName}</div>
 									<div class="col-sm-12 sm-height boldoo">
-										<div class="row">
-											<ui:repeat value="#{tank.arms}" var="tankArm">
-												<div class="col-md-6">
-
-													<h:selectOneMenu value="#{tankArm.armId}"
-														styleClass="form-control form-control-sm">
-
-														<f:selectItems value="#{adminController.arms}" var="a"
-															itemLabel="#{a.armName}" itemValue="#{a.armId}">
-														</f:selectItems>
-
-													</h:selectOneMenu>
-												</div>
-
-												<div class="col-md-6">
-													<h:selectOneMenu value="#{tankArm.armNo}"
-														styleClass="form-control form-control-sm">
-														<f:selectItem itemValue="01" itemLabel="01" />
-														<f:selectItem itemValue="02" itemLabel="02" />
-
-													</h:selectOneMenu>
-												</div>
-											</ui:repeat>
-										</div>
+									
+										<ui:repeat value="#{arm.armTanks}" var = "at">
+											#{at.tankName}  - #{adminController.productName(at.productId)} 
+										</ui:repeat>
+									</div>
+									<div class="col-sm-12 sm-height boldoo">
+										<h:selectOneMenu value="#{arm.armNo}"
+											styleClass="form-control form-control-sm">
+											<f:selectItem itemValue="01" itemLabel="01" />
+											<f:selectItem itemValue="02" itemLabel="02" />
+										</h:selectOneMenu>
 									</div>
 
 									<div class="col-sm-12 sm-height boldoo">
-										<h:inputText value="#{tank.ip}"
+										<h:inputText value="#{arm.ip}"
 											styleClass="form-control form-control-sm" />
 									</div>
 
@@ -86,7 +68,7 @@
 									<div class="col-sm-12">
 										<h:commandButton styleClass="btn btn-primary btn-sm"
 											value="Хадгалах" style="width:100%"
-											actionListener="#{adminController.saveTankConfig(tank)}"
+											actionListener="#{adminController.saveArmConfig(arm)}"
 											update="@(.table)">
 
 											<f:ajax execute="@form" render="result" />

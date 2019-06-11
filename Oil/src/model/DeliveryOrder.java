@@ -214,4 +214,5 @@ public class DeliveryOrder implements Serializable {
 		this.fillStatus = fillStatus;
 	}
 
+
 }

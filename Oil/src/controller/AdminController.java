@@ -1,11 +1,22 @@
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.jsoup.Jsoup;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
@@ -27,6 +38,7 @@ public class AdminController implements Serializable {
 	private List<Arm> arms;
 	private CustomDao cursor = new CustomDao();
 	private User cursorUser = new User();
+	///
 
 	public AdminController() {
 		super();
@@ -49,46 +61,37 @@ public class AdminController implements Serializable {
 				Product p = (Product) o;
 				products.add(p);
 			}
-			
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank t = (Tank) o;
 				this.tanks.add(t);
 
 			}
-			for (Tank t : tanks) {
-				t.setArms(new ArrayList<Arm>());
-				t.getArms().clear();
-
+			for (Arm a : arms) {
+				a.getArmTanks().clear();
 				StringBuilder sb = new StringBuilder();
 				sb.append("SELECT  tam  ");
 				sb.append("FROM TankArmMap  tam ");
-				sb.append("WHERE tam.tankId =  ");
-				sb.append(t.getTankId());
+				sb.append("WHERE tam.armId =  ");
+				sb.append(a.getArmId());
 				sb.append(" ");
 
 				List<Object> ol = new ArrayList<Object>();
 
-				ol = cursor.getListByQuery(new Arm(), sb.toString());
+				ol = cursor.getListByQuery(new TankArmMap(), sb.toString());
 
 				if (ol != null && ol.size() > 0) {
-					for (Object o : cursor.getListByQuery(new TankArmMap(), sb.toString())) {
+					for (Object o : ol) {
 						TankArmMap tam = (TankArmMap) o;
-						Arm a = new Arm();
-						a.setMapId(tam.getId());
-						a.setArmId(tam.getArmId());
-						a.setArmNo(tam.getArmNo());
-						t.getArms().add(a);
+						Tank tt = new Tank();
+						tt.setTankId(tam.getTankId());
+						StringBuilder qry = new StringBuilder();
+						qry.append("select t from Tank t where t.tankId = ");
+						qry.append(tam.getTankId());
+						tt= (Tank)cursor.getListByQuery(new Tank(), qry.toString()).get(0);
+						a.getArmTanks().add(tt);
 					}
-				} else {
-
-					System.out.println("ADDING DUMMY");
-					Arm a = new Arm();
-					a.setMapId(0);
-					t.getArms().add(a);
-
 				}
-
 			}
 			getUsers().clear();
 			for (Object ob : cursor.getList(new User())) {
@@ -105,21 +108,83 @@ public class AdminController implements Serializable {
 		}
 	}
 
+	public void loadFromOilDepot() {
+		try {
+			String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=3";
+			Document doc = Jsoup.connect(url).get();
+			Element body = doc.select("body").first();
+			System.out.println("Text: " + body.text());
+
+			Object obj = new JSONParser().parse(body.text());
+
+			JSONObject jo = (JSONObject) obj;
+			JSONArray tankArmMapList = (JSONArray) jo.get("TankAndArmConfigDetailListJSON");
+			Iterator<JSONObject> tamIterator = tankArmMapList.iterator();
+			JSONArray tankList = (JSONArray) jo.get("TankDetailListJSON");
+			Iterator<JSONObject> tankIterator = tankList.iterator();
+			JSONArray productList = (JSONArray) jo.get("ProductDetailListJSON");
+			Iterator<JSONObject> productIterator = productList.iterator();
+			JSONArray armList = (JSONArray) jo.get("ArmDetailListJSON");
+			Iterator<JSONObject> armIterator = armList.iterator();
+
+			while (productIterator.hasNext()) {
+				Product p = new Product();
+				JSONObject jjo = productIterator.next();
+				p.setProductName((String) jjo.get("ProductName"));
+				p.setProductId((int) (long) jjo.get("ProductID"));
+				
+				cursor.insert(p);
+				System.out.println("--" +  p.getProductName());
+			}
+
+			while (armIterator.hasNext()) {
+				Arm a = new Arm();
+				JSONObject jjo = armIterator.next();
+				a.setArmName((String) jjo.get("ArmName"));
+				a.setArmId((int) (long) jjo.get("ArmID"));
+				cursor.insert(a);
+				System.out.println("--" +  a.getArmName());
+			}
+
+			while (tankIterator.hasNext()) {
+				Tank t = new Tank();
+				JSONObject jjo = tankIterator.next();
+				t.setTankName((String) jjo.get("TankName"));
+				t.setTankId((int) (long) jjo.get("TankID"));
+				t.setProductId((int) (long) jjo.get("ProductID"));
+				cursor.insert(t);
+				System.out.println("--" +  t.getTankName());
+			}
+
+			while (tamIterator.hasNext()) {
+				TankArmMap tam = new TankArmMap();
+				JSONObject jjo = tamIterator.next();
+				tam.setTankId((int) (long) jjo.get("TankID"));
+				tam.setArmId((int) (long) jjo.get("ArmID"));
+				cursor.insert(tam);
+			}
+			initData();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
 	public void saveTankConfig(Tank tank) {
 		try {
 			cursor.update(tank);
-			for (Arm a : tank.getArms()) {
-				TankArmMap tam = new TankArmMap();
-				tam.setTankId(tank.getTankId());
-				tam.setArmId(a.getArmId());
-				tam.setArmNo(a.getArmNo());
-				tam.setId(a.getMapId());
-				if (tam.getId() == 0)
-					cursor.insert(tam);
-				else
-					cursor.update(tam);
 
-			}
+		} catch (Exception ex) {
+			System.out.println("error occured while getting data saveBay..");
+			ex.printStackTrace();
+		}
+
+	}
+
+	public void savearmConfig(Arm arm) {
+		try {
+			cursor.update(arm);
 
 		} catch (Exception ex) {
 			System.out.println("error occured while getting data saveBay..");

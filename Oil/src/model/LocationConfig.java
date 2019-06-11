@@ -13,8 +13,8 @@ import javax.persistence.Transient;
 import org.primefaces.PrimeFaces;
 
 @Entity
-@Table(name = "TankArmMap")
-public class TankArmMap implements Serializable {
+@Table(name = "LocationConfig")
+public class LocationConfig implements Serializable {
 
 	/**
 	 * 
@@ -26,15 +26,8 @@ public class TankArmMap implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	@Column(name = "armId")
-	private int armId;
-
-	@Column(name = "tankId")
-	private int tankId;
-
-	public TankArmMap() {
-		super();
-	}
+	@Column(name = "locationId")
+	private int locationId;
 
 	public int getId() {
 		return id;
@@ -44,20 +37,12 @@ public class TankArmMap implements Serializable {
 		this.id = id;
 	}
 
-	public int getArmId() {
-		return armId;
+	public int getLocationId() {
+		return locationId;
 	}
 
-	public void setArmId(int armId) {
-		this.armId = armId;
-	}
-
-	public void setTankId(int tankId) {
-		this.tankId = tankId;
-	}
-
-	public int getTankId() {
-		return tankId;
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
 	}
 
 	public static long getSerialversionuid() {

@@ -3,11 +3,18 @@ package controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
@@ -29,7 +36,7 @@ public class HomeController implements Serializable {
 	private CustomDao cursor = new CustomDao();
 	private List<Tank> tanks;
 	private List<Product> products;
-
+	private List<Arm> arms;
 	private String tempCommand;
 	public Date dd = new Date();
 
@@ -39,66 +46,66 @@ public class HomeController implements Serializable {
 
 	public void initData() {
 		try {
+			
 
 			getTanks().clear();
 			getProducts().clear();
+			getArms().clear();
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
 				this.tanks.add(b);
 			}
 
+			for (Object o : cursor.getList(new Arm())) {
+				Arm a = (Arm) o;
+				arms.add(a);
+
+			}
+
 			for (Object o : cursor.getList(new Product())) {
 				Product p = (Product) o;
 				products.add(p);
 			}
-
-			for (Tank b : tanks) {
-				b.getOrders().clear();
-				StringBuilder sb = new StringBuilder();
-				sb.append("SELECT od ");
-				sb.append("from DeliveryOrder od ");
-				sb.append("WHERE od.productId =  ");
-				sb.append(b.getProductId());
-
-				sb.append("  ");
-				for (Object o : cursor.getListByQuery(new DeliveryOrder(), sb.toString())) {
-					DeliveryOrder od = (DeliveryOrder) o;
-					b.getOrders().add(od);
-				}
-
-			}
-			for (Tank t : tanks) {
-				t.setArms(new ArrayList<Arm>());
-				t.getArms().clear();
-
+			for (Arm a : arms) {
+				a.getArmTanks().clear();
 				StringBuilder sb = new StringBuilder();
 				sb.append("SELECT  tam  ");
 				sb.append("FROM TankArmMap  tam ");
-				sb.append("WHERE tam.tankId =  ");
-				sb.append(t.getTankId());
+				sb.append("WHERE tam.armId =  ");
+				sb.append(a.getArmId());
 				sb.append(" ");
 
 				List<Object> ol = new ArrayList<Object>();
 
-				ol = cursor.getListByQuery(new Arm(), sb.toString());
+				ol = cursor.getListByQuery(new TankArmMap(), sb.toString());
 
 				if (ol != null && ol.size() > 0) {
-					for (Object o : cursor.getListByQuery(new TankArmMap(), sb.toString())) {
+					for (Object o : ol) {
 						TankArmMap tam = (TankArmMap) o;
-						Arm a = new Arm();
-						a.setMapId(tam.getId());
-						a.setArmId(tam.getArmId());
-						a.setArmNo(tam.getArmNo());
-						t.getArms().add(a);
+						Tank tt = new Tank();
+						tt.setTankId(tam.getTankId());
+						StringBuilder qry = new StringBuilder();
+						qry.append("select t from Tank t where t.tankId = ");
+						qry.append(tam.getTankId());
+						tt = (Tank) cursor.getListByQuery(new Tank(), qry.toString()).get(0);
+						a.getArmTanks().add(tt);
 					}
-				} else {
+				}
+			}
 
-					System.out.println("ADDING DUMMY");
-					Arm a = new Arm();
-					a.setMapId(0);
-					t.getArms().add(a);
+			for (Arm a : arms) {
+				a.getOrders().clear();
+				StringBuilder sb = new StringBuilder();
+				sb.append("SELECT od ");
+				sb.append("from DeliveryOrder od ");
+				sb.append("WHERE od.productId =  ");
+				sb.append(a.getProductId());
 
+				sb.append("  ");
+				for (Object o : cursor.getListByQuery(new DeliveryOrder(), sb.toString())) {
+					DeliveryOrder od = (DeliveryOrder) o;
+					a.getOrders().add(od);
 				}
 
 			}
@@ -110,11 +117,47 @@ public class HomeController implements Serializable {
 		PrimeFaces.current().ajax().update("form:baySection");
 
 	}
+	
+	public void getOrderDataFromOilDepot()
+	{
+		
+			try {
+				String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=3";
+				Document doc = Jsoup.connect(url).get();
+				Element body = doc.select("body").first();
+				System.out.println("Text: " + body.text());
 
-	public void changeOrder(Tank b, int id, int index) {
-		for (DeliveryOrder od : b.getOrders()) {
+				Object obj = new JSONParser().parse(body.text());
+
+				JSONArray ja = (JSONArray) obj;
+				
+				Iterator<JSONObject> orderIterator = ja.iterator();
+				
+
+				while (orderIterator.hasNext()) {
+					Product p = new Product();
+					JSONObject jjo = orderIterator.next();
+					p.setProductName((String) jjo.get("ProductName"));
+					p.setProductId((int) (long) jjo.get("ProductID"));
+					
+					cursor.insert(p);
+					System.out.println("--" +  p.getProductName());
+				}
+
+				
+				initData();
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+		
+	}
+
+	public void changeOrder(Arm a, int id, int index) {
+		for (DeliveryOrder od : a.getOrders()) {
 			if (od.getId() == id) {
-				b.setSelectedOrder(od);
+				a.setSelectedOrder(od);
 			}
 		}
 
@@ -168,6 +211,19 @@ public class HomeController implements Serializable {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+
+	public List<Arm> getArms() {
+		if (arms == null) {
+			arms = new ArrayList<Arm>();
+
+		}
+
+		return arms;
+	}
+
+	public void setArms(List<Arm> arms) {
+		this.arms = arms;
 	}
 
 }
