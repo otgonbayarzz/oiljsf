@@ -153,7 +153,11 @@ public class Arm implements Serializable {
 						.setArmStartMetr(Float.valueOf(resp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
 			if (getSelectedOrder().getId() != 0) {
-				cursor.update(this.getSelectedOrder());
+				try {
+					cursor.update(this.getSelectedOrder());
+				} catch (Exception ex) {
+
+				}
 			}
 
 		}
@@ -184,9 +188,9 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		try {
-			
+
 			Thread.sleep(100);
-			
+
 		} catch (Exception ex) {
 
 		}
@@ -208,6 +212,14 @@ public class Arm implements Serializable {
 	}
 
 	public void next(long index) {
+		setPollStop(true);
+		StringBuilder ssbb = new StringBuilder();
+		ssbb.append("PF('poll");
+		ssbb.append(index);
+		ssbb.append("').stop();");
+		System.out.println("Stop command -> " + ssbb.toString());
+		executeJsCommand(ssbb.toString());
+
 		giveCommand("01ET");
 	}
 
@@ -250,11 +262,18 @@ public class Arm implements Serializable {
 			String emResp = giveCommand(cmd2.toString());
 			if (emResp.split("G 01").length > 1)
 				this.getSelectedOrder()
-						.setArmStartMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
+						.setArmEndMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
+			
+			///completedShipmentReceiver ParamenterName->ShipmentJSON
 			getSelectedOrder().setShippedDate(new Date());
 			if (getSelectedOrder().getId() != 0) {
-				cursor.update(this.getSelectedOrder());
+				
+				try {
+					cursor.update(this.getSelectedOrder());
+				} catch (Exception ex) {
+
+				}
 			}
 			setPollStop(true);
 			StringBuilder ssbb = new StringBuilder();
@@ -284,7 +303,12 @@ public class Arm implements Serializable {
 						giveCommand(subCmd.toString()).split("Batch")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
 				this.selectedOrder.setFillStatus(String.valueOf(f));
 				if (getSelectedOrder().getId() != 0) {
-					cursor.update(this.getSelectedOrder());
+					try {
+						System.out.println(this.getSelectedOrder().getId());
+						cursor.update(this.getSelectedOrder());
+					} catch (Exception ex) {
+
+					}
 				}
 			}
 			StringBuilder sb = new StringBuilder();

@@ -103,6 +103,7 @@ public class HomeController implements Serializable {
 				sb.append("from DeliveryOrder od ");
 				sb.append("WHERE od.productId =  ");
 				sb.append(a.getProductId());
+				sb.append("  AND shippedDate is null ");
 
 				sb.append("  ");
 				for (Object o : cursor.getListByQuery(new DeliveryOrder(), sb.toString())) {

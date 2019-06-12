@@ -190,6 +190,12 @@ public class AdminController implements Serializable {
 				StringBuilder sb = new StringBuilder();
 				sb.append("select tam from TankArmMap tam where tankId = ");
 				sb.append(tam.getTankId());
+				
+				sb.append(" AND armId =  ");
+				
+				sb.append(tam.getArmId());
+				
+				
 
 				List<Object> ol = cursor.getListByQuery(new TankArmMap(), sb.toString());
 				if (ol != null && ol.size() > 0) {
