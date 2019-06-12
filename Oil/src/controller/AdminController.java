@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import org.jsoup.nodes.Document;
@@ -39,6 +40,9 @@ public class AdminController implements Serializable {
 	private CustomDao cursor = new CustomDao();
 	private User cursorUser = new User();
 	///
+
+	@ManagedProperty(value = "#{appController}")
+	private ApplicationController appController;
 
 	public AdminController() {
 		super();
@@ -110,7 +114,8 @@ public class AdminController implements Serializable {
 
 	public void loadFromOilDepot() {
 		try {
-			String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=3";
+			System.out.println("-----------" + getAppController().getLocationId());
+			String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=" + appController.getLocationId();
 			Document doc = Jsoup.connect(url).get();
 			Element body = doc.select("body").first();
 			System.out.println("Text: " + body.text());
@@ -190,12 +195,10 @@ public class AdminController implements Serializable {
 				StringBuilder sb = new StringBuilder();
 				sb.append("select tam from TankArmMap tam where tankId = ");
 				sb.append(tam.getTankId());
-				
+
 				sb.append(" AND armId =  ");
-				
+
 				sb.append(tam.getArmId());
-				
-				
 
 				List<Object> ol = cursor.getListByQuery(new TankArmMap(), sb.toString());
 				if (ol != null && ol.size() > 0) {
@@ -358,6 +361,16 @@ public class AdminController implements Serializable {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+
+	public ApplicationController getAppController() {
+		if(appController == null)
+			appController = new ApplicationController();
+		return appController;
+	}
+
+	public void setAppController(ApplicationController appController) {
+		this.appController = appController;
 	}
 
 }

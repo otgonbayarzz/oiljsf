@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import org.json.simple.JSONArray;
@@ -40,10 +42,92 @@ public class HomeController implements Serializable {
 	private List<Arm> arms;
 	private String tempCommand;
 
+	@ManagedProperty(value = "#{appController}")
+	private ApplicationController appController;
+
 	public Date dd = new Date();
 
 	public HomeController() {
 		super();
+	}
+
+	public void pushOrders() {
+
+		Date today = new Date();
+		today.setDate(today.getDate() - 1);
+		today.setHours(00);
+		today.setMinutes(00);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("select  dor ");
+		sb.append("from DeliveryOrder dor  ");
+		sb.append("where shippedDate >  '  ");
+		sb.append(df.format(today));
+		sb.append("' and sentStatus = 0 ");
+
+		List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
+		System.out.println(ol.size());
+		if (ol != null && ol.size() > 0)
+			for (Object o : ol) {
+				DeliveryOrder order = (DeliveryOrder) o;
+				JSONObject param = new JSONObject();
+				param.put("TrailerNo", order.getTrailerNo());
+				param.put("VehicleNo", order.getVehicleNo());
+				param.put("Capacity", order.getCapacity());
+
+				param.put("DeliveryOrderID", order.getDeliveryOrderId());
+				param.put("DriverName", order.getDriverName());
+				if (order.getDeliveryOrderDate() != null)
+					param.put("ShippedDate ", order.getDeliveryOrderDate().toString());
+				else
+					param.put("ShippedDate ", null);
+				param.put("DeliveryOrderDate", order.getDeliveryOrderDate().toString());
+				param.put("ProductID", order.getProductId());
+				param.put("CompartmentSequence", order.getCompartmentSequence());
+				if (order.getShippedDate() != null)
+					param.put("ShippedDate ", order.getShippedDate().toString());
+				else
+					param.put("ShippedDate ", null);
+				param.put("TankID", order.getTankId());
+				param.put("ArmID", order.getArmId());
+				param.put("Temperature ", order.getTemprature());
+				param.put("Density ", order.getDensity());
+				param.put("ArmStartMetr ", order.getArmStartMetr());
+				param.put("ArmEndMetr ", order.getArmEndMetr());
+				param.put("ShippedAmount", order.getShippedAmount());
+
+				int i = 0;
+				while (i < 5) {
+					i++;
+					String url = "http://oildepot.petrovis.mn/completedShipmentReceiver?ShipmentJSON="
+							+ param.toString();
+					Document doc = null;
+					try {
+						doc = Jsoup.connect(url).get();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Element body = doc.select("body").first();
+					String rr = body.text();
+					System.out.println("called" + rr);
+					if ("1".equals(rr)) {
+						order.setSentStatus(1);
+						break;
+
+					} else {
+						try {
+
+							Thread.sleep(3000);
+
+						} catch (Exception ex) {
+
+						}
+					}
+
+				}
+			}
 	}
 
 	public void initData() {
@@ -52,7 +136,7 @@ public class HomeController implements Serializable {
 			getTanks().clear();
 			getProducts().clear();
 			getArms().clear();
-			//getOrderDataFromOilDepot();
+			// getOrderDataFromOilDepot();
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
@@ -124,7 +208,9 @@ public class HomeController implements Serializable {
 	public void getOrderDataFromOilDepot() {
 
 		try {
-			String url = "http://oildepot.petrovis.mn/findByDeliveryOrderList?LocationID=3";
+			String url = "http://oildepot.petrovis.mn/findByDeliveryOrderList?LocationID="
+					+ appController.getLocationId();
+			;
 			Document doc = Jsoup.connect(url).get();
 			Element body = doc.select("body").first();
 			System.out.println("Text: " + body.text());
@@ -175,6 +261,8 @@ public class HomeController implements Serializable {
 
 			ex.printStackTrace();
 		}
+
+		initData();
 
 	}
 
@@ -258,6 +346,16 @@ public class HomeController implements Serializable {
 
 	public void setCursor(CustomDao cursor) {
 		this.cursor = cursor;
+	}
+
+	public ApplicationController getAppController() {
+		if (appController == null)
+			appController = new ApplicationController();
+		return appController;
+	}
+
+	public void setAppController(ApplicationController appController) {
+		this.appController = appController;
 	}
 
 }

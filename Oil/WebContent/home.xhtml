@@ -10,9 +10,10 @@
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
+			<p:poll interval="10" listener="#{homeController.pushOrders}" widgetVar="pusher" autoStart="true"/>
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-primary btn-sm"
-					value="Захиалга бөглөх" style="width:100%">
+					value="Захиалга бөглөх" style="width:100%" actionListener="#{homeController.getOrderDataFromOilDepot}">
 					<f:ajax execute="@form" render="result" />
 				</h:commandButton>
 			</div>
@@ -155,7 +156,7 @@
 										<!-- Loading Volume -->
 										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm "
-												disabled="true" value="#{arm.selectedOrder.fillStatus}" />
+												disabled="true" value="#{arm.selectedOrder.shippedAmount}" />
 										</div>
 
 

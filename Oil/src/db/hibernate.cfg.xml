@@ -7,7 +7,7 @@
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">root</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-		
+
 		<property name="hibernate.connection.pool_size">1000</property>
 
 		<property name="show_sql">true</property>
@@ -23,8 +23,8 @@
 		<mapping class="model.TankArmMap" />
 		<mapping class="model.DeliveryOrder" />
 		<mapping class="model.LocationConfig" />
-		
-		
-		
+
+
+
 	</session-factory>
 </hibernate-configuration>

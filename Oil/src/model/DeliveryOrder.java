@@ -75,8 +75,11 @@ public class DeliveryOrder implements Serializable {
 	@Column(name = "armEndMetr")
 	private float armEndMetr;
 
-	@Column(name = "fillStatus")
-	private String fillStatus;
+	@Column(name = "shippedAmount")
+	private float shippedAmount;
+
+	@Column(name = "sentStatus")
+	private int sentStatus;
 
 	public int getId() {
 		return id;
@@ -206,13 +209,20 @@ public class DeliveryOrder implements Serializable {
 		this.armEndMetr = armEndMetr;
 	}
 
-	public String getFillStatus() {
-		return fillStatus;
+	public float getShippedAmount() {
+		return shippedAmount;
 	}
 
-	public void setFillStatus(String fillStatus) {
-		this.fillStatus = fillStatus;
+	public void setShippedAmount(float shippedAmount) {
+		this.shippedAmount = shippedAmount;
 	}
 
+	public int getSentStatus() {
+		return sentStatus;
+	}
+
+	public void setSentStatus(int sentStatus) {
+		this.sentStatus = sentStatus;
+	}
 
 }

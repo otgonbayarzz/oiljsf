@@ -19,6 +19,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.primefaces.PrimeFaces;
 
 import db.CustomDao;
@@ -68,7 +72,7 @@ public class Arm implements Serializable {
 	private int productId;
 
 	@Transient
-	private CustomDao cursor;
+	private CustomDao cursor = new CustomDao();
 
 	@Transient
 	private boolean pollStop = false;
@@ -143,31 +147,34 @@ public class Arm implements Serializable {
 		response = giveCommand(cmd.toString());
 
 		if (!"error".equals(response) && response.contains("OK")) {
-
+			// Эхлэл заалт авах command
 			StringBuilder cmd2 = new StringBuilder();
 			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			cmd2.append("VT G 01");
 			String resp = giveCommand(cmd2.toString());
+
 			if (resp.split("G 01").length > 1)
 				this.getSelectedOrder()
 						.setArmStartMetr(Float.valueOf(resp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
 			if (getSelectedOrder().getId() != 0) {
 				try {
-					cursor.update(this.getSelectedOrder());
+
+					getCursor().update(this.getSelectedOrder());
+
 				} catch (Exception ex) {
 
 				}
 			}
 
 		}
+
 		setPollStop(false);
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
 		ssbb.append(index);
 		ssbb.append("').start();");
 
-		System.out.println("Start command -> " + ssbb.toString());
 		executeJsCommand(ssbb.toString());
 
 		StringBuilder sb = new StringBuilder();
@@ -260,21 +267,23 @@ public class Arm implements Serializable {
 			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			cmd2.append("VT G 01");
 			String emResp = giveCommand(cmd2.toString());
-			if (emResp.split("G 01").length > 1)
-				this.getSelectedOrder()
-						.setArmEndMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
-
-			
-			///completedShipmentReceiver ParamenterName->ShipmentJSON
 			getSelectedOrder().setShippedDate(new Date());
+
 			if (getSelectedOrder().getId() != 0) {
-				
+
 				try {
-					cursor.update(this.getSelectedOrder());
+					getCursor().update(this.getSelectedOrder());
 				} catch (Exception ex) {
 
 				}
 			}
+
+			if (emResp.split("G 01").length > 1)
+				this.getSelectedOrder()
+						.setArmEndMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
+
+			/// completedShipmentReceiver ParamenterName->ShipmentJSON
+
 			setPollStop(true);
 			StringBuilder ssbb = new StringBuilder();
 			ssbb.append("PF('poll");
@@ -301,11 +310,11 @@ public class Arm implements Serializable {
 			if (!statusResp.equals("error") && statusResp.split("Batch").length > 1) {
 				float f = Float.valueOf(
 						giveCommand(subCmd.toString()).split("Batch")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
-				this.selectedOrder.setFillStatus(String.valueOf(f));
+				this.selectedOrder.setShippedAmount(f);
 				if (getSelectedOrder().getId() != 0) {
 					try {
 						System.out.println(this.getSelectedOrder().getId());
-						cursor.update(this.getSelectedOrder());
+						getCursor().update(this.getSelectedOrder());
 					} catch (Exception ex) {
 
 					}
@@ -385,13 +394,13 @@ public class Arm implements Serializable {
 	}
 
 	public DeliveryOrder getSelectedOrder() {
-		if (selectedOrder == null)
+		if (this.selectedOrder == null)
 			if (getOrders().size() > 0)
-				selectedOrder = orders.get(0);
+				this.selectedOrder = orders.get(0);
 			else
-				selectedOrder = new DeliveryOrder();
+				this.selectedOrder = new DeliveryOrder();
 
-		return selectedOrder;
+		return this.selectedOrder;
 	}
 
 	public void setSelectedOrder(DeliveryOrder selectedOrder) {
@@ -434,7 +443,7 @@ public class Arm implements Serializable {
 
 	public CustomDao getCursor() {
 		if (cursor == null)
-			cursor = new CustomDao();
+			this.cursor = new CustomDao();
 		return cursor;
 	}
 
