@@ -29,13 +29,13 @@
 				</h:commandButton>
 			</div>
 		</div>
-		<ui:repeat value="#{homeController.arms}" var="arm" varStatus="index">
-			<p:poll interval="1" listener="#{arm.check(index.index)}"
-				autoStart="false" widgetVar="poll#{index.index}"
-				stop="#{arm.pollStop}" id="poll" />
-		</ui:repeat>
-		<h:panelGroup id="baySection">
 
+		<h:panelGroup id="baySection">
+			<ui:repeat value="#{homeController.arms}" var="arm" varStatus="index">
+				<p:poll interval="1" listener="#{arm.check(index.index)}"
+					autoStart="false" widgetVar="poll#{index.index}"
+					 />
+			</ui:repeat>
 			<div class="row text-center margin-top">
 
 				<table class="table table-borderless">
@@ -72,9 +72,7 @@
 
 
 							<td><h:panelGroup styleClass="bay_#{arm.id}" id="section">
-									<p:poll interval="1" listener="#{arm.check(index.index)}"
-										autoStart="false" widgetVar="poll#{index.index}"
-										stop="#{arm.pollStop}" id="poll" />
+
 									<div class="row">
 										<!-- Bay no -->
 										<div class="col-sm-12 sm-height boldoo">#{arm.armName}</div>
