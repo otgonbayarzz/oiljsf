@@ -16,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.primefaces.PrimeFaces;
+import java.text.SimpleDateFormat;
 
 import db.CustomDao;
 import model.Tank;
@@ -38,6 +39,7 @@ public class HomeController implements Serializable {
 	private List<Product> products;
 	private List<Arm> arms;
 	private String tempCommand;
+
 	public Date dd = new Date();
 
 	public HomeController() {
@@ -46,11 +48,11 @@ public class HomeController implements Serializable {
 
 	public void initData() {
 		try {
-			
-
+			getCursor();
 			getTanks().clear();
 			getProducts().clear();
 			getArms().clear();
+			//getOrderDataFromOilDepot();
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
@@ -117,41 +119,62 @@ public class HomeController implements Serializable {
 		PrimeFaces.current().ajax().update("form:baySection");
 
 	}
-	
-	public void getOrderDataFromOilDepot()
-	{
-		
-			try {
-				String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=3";
-				Document doc = Jsoup.connect(url).get();
-				Element body = doc.select("body").first();
-				System.out.println("Text: " + body.text());
 
-				Object obj = new JSONParser().parse(body.text());
+	public void getOrderDataFromOilDepot() {
 
-				JSONArray ja = (JSONArray) obj;
-				
-				Iterator<JSONObject> orderIterator = ja.iterator();
-				
+		try {
+			String url = "http://oildepot.petrovis.mn/findByDeliveryOrderList?LocationID=3";
+			Document doc = Jsoup.connect(url).get();
+			Element body = doc.select("body").first();
+			System.out.println("Text: " + body.text());
 
-				while (orderIterator.hasNext()) {
-					Product p = new Product();
-					JSONObject jjo = orderIterator.next();
-					p.setProductName((String) jjo.get("ProductName"));
-					p.setProductId((int) (long) jjo.get("ProductID"));
-					
-					cursor.insert(p);
-					System.out.println("--" +  p.getProductName());
-				}
+			Object obj = new JSONParser().parse(body.text());
 
-				
-				initData();
+			JSONArray ja = (JSONArray) obj;
 
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			Iterator<JSONObject> orderIterator = ja.iterator();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			while (orderIterator.hasNext()) {
+				DeliveryOrder order = new DeliveryOrder();
+				JSONObject jjo = orderIterator.next();
+				order.setVehicleNo((String) jjo.get("VehicleNo"));
+				order.setTrailerNo((String) jjo.get("TrailerNo"));
+				order.setProductId((int) (long) jjo.get("ProductID"));
+				order.setCapacity((int) (long) jjo.get("Capacity"));
+				order.setDeliveryOrderId((int) (long) jjo.get("DeliveryOrderID"));
+				order.setDriverName((String) jjo.get("DriverName"));
+				order.setDeliveryOrderDate(df.parse((String) jjo.get("DeliveryOrderDate")));
+				order.setCompartmentSequence((int) (long) jjo.get("CompartmentSequence"));
+				System.out.println(order.getVehicleNo());
+				StringBuilder sb = new StringBuilder();
+				sb.append(" select order ");
+				sb.append(" from DeliveryOrder order ");
+				sb.append(" where compartmentSequence =  ");
+				sb.append(order.getCompartmentSequence());
+				sb.append(" and productId =  ");
+				sb.append(order.getProductId());
+				sb.append(" and deliveryOrderId =  ");
+				sb.append(order.getDeliveryOrderId());
+				sb.append(" and vehicleNo =   '");
+				sb.append(order.getVehicleNo());
+				sb.append("' and shippedDate is null ");
+
+				List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
+				if (ol != null && ol.size() > 0) {
+					order.setId(((DeliveryOrder) ol.get(0)).getId());
+					cursor.update(order);
+
+				} else
+					cursor.insert(order);
+
+				// System.out.println("--" + p.getProductName());
 			}
 
-		
+		} catch (Exception ex) {
+
+			ex.printStackTrace();
+		}
+
 	}
 
 	public void changeOrder(Arm a, int id, int index) {
@@ -224,6 +247,16 @@ public class HomeController implements Serializable {
 
 	public void setArms(List<Arm> arms) {
 		this.arms = arms;
+	}
+
+	public CustomDao getCursor() {
+		if (cursor == null)
+			cursor = new CustomDao();
+		return cursor;
+	}
+
+	public void setCursor(CustomDao cursor) {
+		this.cursor = cursor;
 	}
 
 }

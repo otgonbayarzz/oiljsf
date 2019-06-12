@@ -27,7 +27,7 @@ public class LocationConfig implements Serializable {
 	private int id;
 
 	@Column(name = "locationId")
-	private int locationId;
+	private String locationId;
 
 	public int getId() {
 		return id;
@@ -37,11 +37,11 @@ public class LocationConfig implements Serializable {
 		this.id = id;
 	}
 
-	public int getLocationId() {
+	public String getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(int locationId) {
+	public void setLocationId(String locationId) {
 		this.locationId = locationId;
 	}
 

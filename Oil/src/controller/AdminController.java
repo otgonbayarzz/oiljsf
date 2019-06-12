@@ -47,7 +47,7 @@ public class AdminController implements Serializable {
 	public void initData() {
 
 		try {
-
+			getCursor();
 			getTanks().clear();
 			getArms().clear();
 			getProducts().clear();
@@ -88,7 +88,7 @@ public class AdminController implements Serializable {
 						StringBuilder qry = new StringBuilder();
 						qry.append("select t from Tank t where t.tankId = ");
 						qry.append(tam.getTankId());
-						tt= (Tank)cursor.getListByQuery(new Tank(), qry.toString()).get(0);
+						tt = (Tank) cursor.getListByQuery(new Tank(), qry.toString()).get(0);
 						a.getArmTanks().add(tt);
 					}
 				}
@@ -132,9 +132,17 @@ public class AdminController implements Serializable {
 				JSONObject jjo = productIterator.next();
 				p.setProductName((String) jjo.get("ProductName"));
 				p.setProductId((int) (long) jjo.get("ProductID"));
-				
-				cursor.insert(p);
-				System.out.println("--" +  p.getProductName());
+				StringBuilder sb = new StringBuilder();
+				sb.append("select p from Product p where productId = ");
+				sb.append(p.getProductId());
+				List<Object> ol = cursor.getListByQuery(new Product(), sb.toString());
+				if (ol != null && ol.size() > 0) {
+					p.setId(((Product) ol.get(0)).getId());
+					cursor.update(p);
+				} else {
+					cursor.insert(p);
+				}
+
 			}
 
 			while (armIterator.hasNext()) {
@@ -142,8 +150,17 @@ public class AdminController implements Serializable {
 				JSONObject jjo = armIterator.next();
 				a.setArmName((String) jjo.get("ArmName"));
 				a.setArmId((int) (long) jjo.get("ArmID"));
-				cursor.insert(a);
-				System.out.println("--" +  a.getArmName());
+				StringBuilder sb = new StringBuilder();
+				sb.append("select a from Arm a where armId = ");
+				sb.append(a.getArmId());
+
+				List<Object> ol = cursor.getListByQuery(new Arm(), sb.toString());
+				if (ol != null && ol.size() > 0) {
+					a.setId(((Arm) ol.get(0)).getId());
+					cursor.update(a);
+				} else {
+					cursor.insert(a);
+				}
 			}
 
 			while (tankIterator.hasNext()) {
@@ -152,8 +169,17 @@ public class AdminController implements Serializable {
 				t.setTankName((String) jjo.get("TankName"));
 				t.setTankId((int) (long) jjo.get("TankID"));
 				t.setProductId((int) (long) jjo.get("ProductID"));
-				cursor.insert(t);
-				System.out.println("--" +  t.getTankName());
+				StringBuilder sb = new StringBuilder();
+				sb.append("select t from Tank t where tankId = ");
+				sb.append(t.getTankId());
+
+				List<Object> ol = cursor.getListByQuery(new Tank(), sb.toString());
+				if (ol != null && ol.size() > 0) {
+					t.setId(((Tank) ol.get(0)).getId());
+					cursor.update(t);
+				} else {
+					cursor.insert(t);
+				}
 			}
 
 			while (tamIterator.hasNext()) {
@@ -161,7 +187,17 @@ public class AdminController implements Serializable {
 				JSONObject jjo = tamIterator.next();
 				tam.setTankId((int) (long) jjo.get("TankID"));
 				tam.setArmId((int) (long) jjo.get("ArmID"));
-				cursor.insert(tam);
+				StringBuilder sb = new StringBuilder();
+				sb.append("select tam from TankArmMap tam where tankId = ");
+				sb.append(tam.getTankId());
+
+				List<Object> ol = cursor.getListByQuery(new TankArmMap(), sb.toString());
+				if (ol != null && ol.size() > 0) {
+					tam.setId(((TankArmMap) ol.get(0)).getId());
+					cursor.update(tam);
+				} else {
+					cursor.insert(tam);
+				}
 			}
 			initData();
 
@@ -182,7 +218,7 @@ public class AdminController implements Serializable {
 
 	}
 
-	public void savearmConfig(Arm arm) {
+	public void saveArmConfig(Arm arm) {
 		try {
 			cursor.update(arm);
 

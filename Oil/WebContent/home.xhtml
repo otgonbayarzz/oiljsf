@@ -29,6 +29,11 @@
 				</h:commandButton>
 			</div>
 		</div>
+		<ui:repeat value="#{homeController.arms}" var="arm" varStatus="index">
+			<p:poll interval="1" listener="#{arm.check(index.index)}"
+				autoStart="false" widgetVar="poll#{index.index}"
+				stop="#{arm.pollStop}" id="poll" />
+		</ui:repeat>
 		<h:panelGroup id="baySection">
 
 			<div class="row text-center margin-top">
@@ -65,9 +70,11 @@
 						<ui:repeat value="#{homeController.arms}" var="arm" id="bb"
 							varStatus="index">
 
-							<p:poll interval="1" listener="#{arm.check}" autoStart="false"
-								widgetVar="poll#{arm.id}" />
+
 							<td><h:panelGroup styleClass="bay_#{arm.id}" id="section">
+									<p:poll interval="1" listener="#{arm.check(index.index)}"
+										autoStart="false" widgetVar="poll#{index.index}"
+										stop="#{arm.pollStop}" id="poll" />
 									<div class="row">
 										<!-- Bay no -->
 										<div class="col-sm-12 sm-height boldoo">#{arm.armName}</div>
@@ -79,7 +86,7 @@
 											<h:selectOneMenu styleClass="form-control form-control-sm"
 												value="#{arm.selectedOrderId}">
 												<f:selectItems value="#{arm.orders}" var="o"
-													itemLabel="ЗД: #{o.deliveryOrderId},  МашинДугаар: #{o.vehicleNo},  Тасалгаа: #{o.compartmentSequence},  Хэмжээ: #{o.capacity}"
+													itemLabel="Захиалгын №: #{o.deliveryOrderId},  Машин: #{o.vehicleNo},  Тасалгаа: #{o.compartmentSequence},  Хэмжээ: #{o.capacity}"
 													itemValue="#{o.id}">
 												</f:selectItems>
 												<p:ajax event="change"
@@ -135,18 +142,18 @@
 										<!-- Load Status -->
 										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="start" actionListener="#{arm.start}">
+												value="start" actionListener="#{arm.start(index.index)}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
 										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="next" actionListener="#{arm.next}">
+												value="next" actionListener="#{arm.next(index.index)}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
 
-										
+
 										<!-- Loading Volume -->
 										<div class="col-sm-12 sm-height">
 											<h:inputText styleClass="form-control form-control-sm "
@@ -182,8 +189,8 @@
 
 										<div class="col-sm-12">
 											<h:commandButton styleClass="btn btn-danger btn-sm"
-												value="STOP" style="width:100%" disabled="#{!bay.active}"
-												actionListener="#{tank.stop}">
+												value="STOP" style="width:100%"
+												actionListener="#{arm.stop(index.index)}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
@@ -203,11 +210,7 @@
 
 
 		</h:panelGroup>
-		<div class="row">
-
-
-
-		</div>
+		<div class="row"></div>
 		<p:remoteCommand name="initData"
 			actionListener="#{homeController.initData}">
 

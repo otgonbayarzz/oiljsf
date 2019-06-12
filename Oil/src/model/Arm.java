@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -19,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.primefaces.PrimeFaces;
+
+import db.CustomDao;
 
 @Entity
 @Table(name = "Arm")
@@ -60,11 +63,15 @@ public class Arm implements Serializable {
 
 	@Transient
 	private int selectedOrderId;
-	
+
 	@Transient
 	private int productId;
-	
-	
+
+	@Transient
+	private CustomDao cursor;
+
+	@Transient
+	private boolean pollStop = false;
 
 	public Arm() {
 		super();
@@ -104,148 +111,195 @@ public class Arm implements Serializable {
 			ret = responseData;
 
 		} catch (UnknownHostException ex) {
-			ret = ex.getMessage();
+
+			return "error";
 
 		} catch (IOException ex) {
 
-			System.out.println("I/O error: " + ex.getMessage());
-			ret = ex.getMessage();
+			return "error";
 
 		} catch (InterruptedException e) {
 
-			// TODO Auto-generated catch block
-			ret = e.getMessage();
-			e.printStackTrace();
+			return "error";
 
 		} finally {
 			String kk = "Command:" + cmd + "\t Response :" + ret;
-			System.out.println("Command:" + cmd + "\t Response :" + ret);
-			PrimeFaces.current().executeScript("console.log('" + kk + "');");
+
+			executeJsCommand("console.log('" + kk + "');");
 
 		}
 
 		return ret;
 	}
 
-	public void start() {
+	public void start(long index) {
 
+		// Zahialga uguh command
 		StringBuilder cmd = new StringBuilder();
-		cmd.append("01");
+		cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 		cmd.append("SB ");
 		cmd.append(getSelectedOrder().getCapacity());
-		giveCommand(cmd.toString());
-		// todo fix
-		this.getSelectedOrder().setArmStartMetr(Float.valueOf(giveCommand("01VT G 01").split("G 01")[1]));
+		String response = "error";
+		response = giveCommand(cmd.toString());
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(this.id - 1);
-		sb.append(":section");
+		if (!"error".equals(response) && response.contains("OK")) {
 
-		StringBuilder ssb = new StringBuilder();
-		ssb.append("PF('pb");
-		ssb.append(this.id - 1);
-		ssb.append("').getJQ().show();");
+			StringBuilder cmd2 = new StringBuilder();
+			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+			cmd2.append("VT G 01");
+			String resp = giveCommand(cmd2.toString());
+			if (resp.split("G 01").length > 1)
+				this.getSelectedOrder()
+						.setArmStartMetr(Float.valueOf(resp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
+			if (getSelectedOrder().getId() != 0) {
+				cursor.update(this.getSelectedOrder());
+			}
+
+		}
+		setPollStop(false);
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
-		ssbb.append(this.id - 1);
+		ssbb.append(index);
 		ssbb.append("').start();");
 
-		PrimeFaces.current().ajax().update(sb.toString());
-		PrimeFaces.current().executeScript(ssb.toString());
-		PrimeFaces.current().executeScript(ssbb.toString());
-
-	}
-
-	public void stop() {
-
-		StringBuilder cmd = new StringBuilder();
-		cmd.append("01");
-		cmd.append("ST ");
+		System.out.println("Start command -> " + ssbb.toString());
+		executeJsCommand(ssbb.toString());
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("form:bb:");
-		sb.append(this.id - 1);
+		sb.append(index);
 		sb.append(":section");
-
-		StringBuilder ssb = new StringBuilder();
-		ssb.append("PF('pb");
-		ssb.append(this.id - 1);
-		ssb.append("').getJQ().hide();");
-
-		StringBuilder ssbb = new StringBuilder();
-		ssbb.append("PF('poll");
-		ssbb.append(this.id - 1);
-		ssbb.append("').stop();");
-
 		PrimeFaces.current().ajax().update(sb.toString());
-		PrimeFaces.current().executeScript(ssb.toString());
-		PrimeFaces.current().executeScript(ssbb.toString());
 
 	}
 
-	public void next() {
+	public void stop(long index) {
+		setPollStop(true);
+		StringBuilder ssbb = new StringBuilder();
+		ssbb.append("PF('poll");
+		ssbb.append(index);
+		ssbb.append("').stop();");
+		System.out.println("Stop command -> " + ssbb.toString());
+		executeJsCommand(ssbb.toString());
+
+		try {
+			System.out.println("sleeping");
+			Thread.sleep(5000);
+			System.out.println("waking");
+		} catch (Exception ex) {
+
+		}
+
+		StringBuilder cmd = new StringBuilder();
+		cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+		cmd.append("ST");
+		String resp = "error";
+
+		resp = giveCommand(cmd.toString());
+		System.out.println(resp);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("form:bb:");
+		sb.append(index);
+		sb.append(":section");
+		PrimeFaces.current().ajax().update(sb.toString());
+
+	}
+
+	public void next(long index) {
 		giveCommand("01ET");
 	}
 
-	public void check() {
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
+	public void check(long index) {
 		StringBuilder cmd = new StringBuilder();
-		cmd.append("01");
+		cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 		cmd.append("RS");
-		if (giveCommand(cmd.toString()).contains("BD")) {
+		String resp = "error";
+		resp = giveCommand(cmd.toString());
+		if (!resp.equals("error") && resp.contains("BD")) {
 			// Temprature
 			StringBuilder subCmd = new StringBuilder();
-			subCmd.append("01");
+			subCmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			subCmd.append("DY CB 6");
-			float floatTemprature = Float
-					.valueOf(giveCommand(subCmd.toString()).split("Temp")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
-			this.selectedOrder.setTemprature((int) floatTemprature);
+			String tempResp = giveCommand(subCmd.toString());
+			if (tempResp.split("Temp").length > 1) {
+				float floatTemprature = Float.valueOf(tempResp.split("Temp")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
+				this.selectedOrder.setTemprature((int) floatTemprature);
+			}
 
 			// Density
 			StringBuilder subCmd1 = new StringBuilder();
-			subCmd1.append("01");
+			subCmd1.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			subCmd1.append("DY CB 7");
+			String densResp = giveCommand(subCmd1.toString());
+			if (densResp.split("Dens").length > 1) {
+				float denisity = Float.valueOf(densResp.split("Dens")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
+				this.selectedOrder.setDensity(denisity);
+			}
 
-			float denisity = Float
-					.valueOf(giveCommand(subCmd1.toString()).split("Dens")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
-			this.selectedOrder.setDensity(denisity);
-			giveCommand("01RE BD");
+			// end batch
+			StringBuilder subCmd2 = new StringBuilder();
+			subCmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+			subCmd2.append("RE BD");
+			giveCommand(subCmd2.toString());
+			// end meter
+			StringBuilder cmd2 = new StringBuilder();
+			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+			cmd2.append("VT G 01");
+			String emResp = giveCommand(cmd2.toString());
+			if (emResp.split("G 01").length > 1)
+				this.getSelectedOrder()
+						.setArmStartMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
-			this.getSelectedOrder().setArmEndMetr(Float.valueOf(giveCommand("01VT G 01").split("G 01")[1]));
-
+			getSelectedOrder().setShippedDate(new Date());
+			if (getSelectedOrder().getId() != 0) {
+				cursor.update(this.getSelectedOrder());
+			}
+			setPollStop(true);
 			StringBuilder ssbb = new StringBuilder();
 			ssbb.append("PF('poll");
-			ssbb.append(this.id - 1);
+			ssbb.append(index);
 			ssbb.append("').stop();");
-			PrimeFaces.current().executeScript(ssbb.toString());
+			executeJsCommand(ssbb.toString());
+			try {
+				System.out.println("sleeping");
+				Thread.sleep(5000);
+				System.out.println("waking");
+			} catch (Exception ex) {
 
-		} else {
+			}
+
+			System.out.println("STOP command" + ssbb.toString());
+
+		} else if (!resp.equals("error")) {
 			// Capacity - Loaded volume
 			StringBuilder subCmd = new StringBuilder();
-			subCmd.append("01");
+			subCmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			subCmd.append("DY CB 2");
+			String statusResp = "error";
+			statusResp = giveCommand(subCmd.toString());
+			if (!statusResp.equals("error") && statusResp.split("Batch").length > 1) {
+				float f = Float.valueOf(
+						giveCommand(subCmd.toString()).split("Batch")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
+				this.selectedOrder.setFillStatus(String.valueOf(f));
+				if (getSelectedOrder().getId() != 0) {
+					cursor.update(this.getSelectedOrder());
+				}
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.append("form:bb:");
+			sb.append(index);
+			sb.append(":section");
 
-			float f = Float
-					.valueOf(giveCommand(subCmd.toString()).split("Batch")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
-			this.selectedOrder.setFillStatus(String.valueOf(f));
+			PrimeFaces.current().ajax().update(sb.toString());
 
 		}
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(this.id - 1);
-		sb.append(":section");
+	}
 
-		PrimeFaces.current().ajax().update(sb.toString());
-
+	public void executeJsCommand(String cmd) {
+		PrimeFaces.current().executeScript(cmd);
 	}
 
 	public int getId() {
@@ -341,16 +395,35 @@ public class Arm implements Serializable {
 	public void setArmTanks(List<Tank> armTanks) {
 		this.armTanks = armTanks;
 	}
-	
+
 	public int getProductId() {
-		if(this.armTanks!= null && this.armTanks.size()>0)
+		if (this.armTanks != null && this.armTanks.size() > 0)
 			productId = this.armTanks.get(0).getProductId();
 		else
 			productId = -1;
 		return productId;
 	}
+
 	public void setProductId(int productId) {
 		this.productId = productId;
+	}
+
+	public CustomDao getCursor() {
+		if (cursor == null)
+			cursor = new CustomDao();
+		return cursor;
+	}
+
+	public void setCursor(CustomDao cursor) {
+		this.cursor = cursor;
+	}
+
+	public boolean isPollStop() {
+		return pollStop;
+	}
+
+	public void setPollStop(boolean pollStop) {
+		this.pollStop = pollStop;
 	}
 
 }

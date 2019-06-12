@@ -11,7 +11,6 @@ import javax.faces.bean.ViewScoped;
 import db.CustomDao;
 import model.User;
 
-
 @SessionScoped
 @ManagedBean(name = "userController")
 public class UserController implements Serializable {
@@ -26,21 +25,19 @@ public class UserController implements Serializable {
 	public UserController() {
 		super();
 	}
-	
-	public boolean isLoggedIn()
-	{
-		if(this.getUser().getId() != 0)
-		
+
+	public boolean isLoggedIn() {
+		if (this.getUser().getId() != 0)
+
 			return true;
-		
+
 		else
 			return false;
 	}
-	
+
 	public String login() {
 		StringBuilder sb = new StringBuilder();
-		
-		System.out.println(getUser().getPassword());
+
 		sb.append("SELECT user  ");
 		sb.append("FROM User user ");
 		sb.append("WHERE user.userName = '");
@@ -48,25 +45,22 @@ public class UserController implements Serializable {
 		sb.append("' AND user.password = '");
 		sb.append(getUser().getPassword());
 		sb.append("' ");
-		
-		
-		
-		
-		
-		for(Object o: cursor.getListByQuery(getUser(), sb.toString()))
-		{
-			System.out.println("I AM HERE");
-			this.user = (User) o;
-			return "home";
-		}
+		List<Object> ol = cursor.getListByQuery(new User(), sb.toString());
+		if (ol != null && ol.size() > 0)
+			for (Object o : cursor.getListByQuery(new User(), sb.toString())) {
+				getUser();
+				this.user = (User) o;
+				return "home";
+			}
 		return "";
 	}
-	
-	public String logout()
-	{
-		return null;
+
+	public String logout() {
+		this.user = new User();
+		return "login";
 	}
 
+	
 	public User getUser() {
 		if (user == null)
 			user = new User();
@@ -92,9 +86,5 @@ public class UserController implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	
-	
-	
 
 }
