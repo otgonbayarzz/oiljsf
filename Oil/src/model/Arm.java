@@ -184,9 +184,9 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		try {
-			System.out.println("sleeping");
-			Thread.sleep(5000);
-			System.out.println("waking");
+			
+			Thread.sleep(100);
+			
 		} catch (Exception ex) {
 
 		}
@@ -263,9 +263,9 @@ public class Arm implements Serializable {
 			ssbb.append("').stop();");
 			executeJsCommand(ssbb.toString());
 			try {
-				System.out.println("sleeping");
-				Thread.sleep(5000);
-				System.out.println("waking");
+
+				Thread.sleep(100);
+
 			} catch (Exception ex) {
 
 			}
