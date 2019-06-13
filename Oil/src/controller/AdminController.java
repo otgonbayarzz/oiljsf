@@ -7,9 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -208,6 +210,8 @@ public class AdminController implements Serializable {
 					cursor.insert(tam);
 				}
 			}
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
 			initData();
 
 		} catch (Exception ex) {
@@ -219,6 +223,8 @@ public class AdminController implements Serializable {
 	public void saveTankConfig(Tank tank) {
 		try {
 			cursor.update(tank);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Амжилттай хадгаллаа"));
 
 		} catch (Exception ex) {
 			System.out.println("error occured while getting data saveBay..");
@@ -230,6 +236,8 @@ public class AdminController implements Serializable {
 	public void saveArmConfig(Arm arm) {
 		try {
 			cursor.update(arm);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Амжилттай хадгаллаа"));
 
 		} catch (Exception ex) {
 			System.out.println("error occured while getting data saveBay..");
@@ -242,6 +250,8 @@ public class AdminController implements Serializable {
 		if (user.getId() == 0) {
 			try {
 				cursor.insert(user);
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Амжилттай хадгаллаа"));
 			} catch (Exception ex) {
 				System.out.println("error occured while getting data saveUser..");
 				ex.printStackTrace();
@@ -262,6 +272,8 @@ public class AdminController implements Serializable {
 		if (user.getId() != 0) {
 			try {
 				cursor.delete(user);
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Амжилттай хадгаллаа"));
 				initData();
 			} catch (Exception ex) {
 				System.out.println("error occured while getting data saveUser..");
@@ -364,7 +376,7 @@ public class AdminController implements Serializable {
 	}
 
 	public ApplicationController getAppController() {
-		if(appController == null)
+		if (appController == null)
 			appController = new ApplicationController();
 		return appController;
 	}

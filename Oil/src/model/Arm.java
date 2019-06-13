@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -215,6 +217,7 @@ public class Arm implements Serializable {
 		sb.append(index);
 		sb.append(":section");
 		PrimeFaces.current().ajax().update(sb.toString());
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт зогсоолоо"));
 
 	}
 
@@ -228,6 +231,7 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		giveCommand("01ET");
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Дараагийн ачилтаа сонгоно уу"));
 	}
 
 	public void check(long index) {
@@ -290,6 +294,7 @@ public class Arm implements Serializable {
 			ssbb.append(index);
 			ssbb.append("').stop();");
 			executeJsCommand(ssbb.toString());
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт дууслаа"));
 			try {
 
 				Thread.sleep(100);

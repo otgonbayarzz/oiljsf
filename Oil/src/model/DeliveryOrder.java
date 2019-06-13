@@ -81,6 +81,16 @@ public class DeliveryOrder implements Serializable {
 	@Column(name = "sentStatus")
 	private int sentStatus;
 
+	public DeliveryOrder() {
+		super();
+	}
+
+	public DeliveryOrder(int doId) {
+		super();
+		this.deliveryOrderId = doId;
+	
+	}
+
 	public int getId() {
 		return id;
 	}

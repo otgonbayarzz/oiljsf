@@ -51,6 +51,32 @@ public class CustomDao {
 			session = HibernateUtil.getSession();
 
 			Query query = session.createQuery(qry);
+
+			retList = query.list();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// handle exception here
+		} finally {
+			try {
+				if (session != null)
+					session.close();
+			} catch (Exception ex) {
+			}
+		}
+		return retList;
+	}
+
+	public List<Object> getListByCustomQuery(Object o, String qry) {
+
+		Session session = null;
+
+		List<Object> retList = null;
+
+		try {
+			session = HibernateUtil.getSession();
+
+			Query query = session.createSQLQuery(qry);
+
 			retList = query.list();
 		} catch (Exception ex) {
 			ex.printStackTrace();

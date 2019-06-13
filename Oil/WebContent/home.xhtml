@@ -10,10 +10,12 @@
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
-			<p:poll interval="10" listener="#{homeController.pushOrders}" widgetVar="pusher" autoStart="true"/>
+			<p:poll interval="200" listener="#{homeController.pushOrders}"
+				widgetVar="pusher" autoStart="true" />
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-primary btn-sm"
-					value="Захиалга бөглөх" style="width:100%" actionListener="#{homeController.getOrderDataFromOilDepot}">
+					value="Захиалга бөглөх" style="width:100%"
+					actionListener="#{homeController.getOrderDataFromOilDepot}">
 					<f:ajax execute="@form" render="result" />
 				</h:commandButton>
 			</div>
@@ -34,8 +36,7 @@
 		<h:panelGroup id="baySection">
 			<ui:repeat value="#{homeController.arms}" var="arm" varStatus="index">
 				<p:poll interval="1" listener="#{arm.check(index.index)}"
-					autoStart="false" widgetVar="poll#{index.index}"
-					 />
+					autoStart="false" widgetVar="poll#{index.index}" />
 			</ui:repeat>
 			<div class="row text-center margin-top">
 

@@ -2,14 +2,17 @@ package controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -52,6 +55,7 @@ public class HomeController implements Serializable {
 	}
 
 	public void pushOrders() {
+		
 
 		Date today = new Date();
 		today.setDate(today.getDate() - 1);
@@ -60,17 +64,37 @@ public class HomeController implements Serializable {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("select  dor ");
-		sb.append("from DeliveryOrder dor  ");
-		sb.append("where shippedDate >  '  ");
-		sb.append(df.format(today));
-		sb.append("' and sentStatus = 0 ");
 
-		List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
-		System.out.println(ol.size());
-		if (ol != null && ol.size() > 0)
-			for (Object o : ol) {
-				DeliveryOrder order = (DeliveryOrder) o;
+		sb.append(" select a.deliveryOrderId from ");
+		sb.append(" (select deliveryOrderId, count(1) as cnt ");
+		sb.append(" from DeliveryOrder ");
+		sb.append(" where shippedDate is not null and sentStatus = 0 ");
+		sb.append(" group by deliveryOrderId  ) as a ");
+		sb.append(" inner join ");
+		sb.append(" ( select deliveryOrderId, count(1) as cnt ");
+		sb.append(" from DeliveryOrder ");
+		sb.append(" group by deliveryOrderId ");
+		sb.append(" ) as b ");
+		sb.append("  on a.deliveryOrderId = b.deliveryOrderId ");
+		sb.append(" and a.cnt = b.cnt ");
+		System.out.println(sb.toString());
+		List<Object> ol = cursor.getListByCustomQuery(Integer.class, sb.toString());
+		
+		for (Object o : ol) {
+			int doId = (int) o;
+			StringBuilder sbb = new StringBuilder();
+			sbb.append(" select dor ");
+			sbb.append(" from DeliveryOrder dor ");
+			sbb.append(" where deliveryOrderId  = ");
+			sbb.append(doId);
+			sbb.append(" and sentStatus  = 0  ");
+			List<Object> doObjectList = cursor.getListByQuery(DeliveryOrder.class, sbb.toString());
+			List<DeliveryOrder> doList = new ArrayList<DeliveryOrder>();
+			JSONArray array = new JSONArray();
+			for (Object ob : doObjectList) {
+				DeliveryOrder order = (DeliveryOrder) ob;
+				doList.add(order);
+
 				JSONObject param = new JSONObject();
 				param.put("TrailerNo", order.getTrailerNo());
 				param.put("VehicleNo", order.getVehicleNo());
@@ -96,38 +120,38 @@ public class HomeController implements Serializable {
 				param.put("ArmStartMetr ", order.getArmStartMetr());
 				param.put("ArmEndMetr ", order.getArmEndMetr());
 				param.put("ShippedAmount", order.getShippedAmount());
+				array.add(param);
 
-				int i = 0;
-				while (i < 5) {
-					i++;
-					String url = "http://oildepot.petrovis.mn/completedShipmentReceiver?ShipmentJSON="
-							+ param.toString();
-					Document doc = null;
-					try {
-						doc = Jsoup.connect(url).get();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Element body = doc.select("body").first();
-					String rr = body.text();
-					System.out.println("called" + rr);
-					if ("1".equals(rr)) {
-						order.setSentStatus(1);
-						break;
-
-					} else {
-						try {
-
-							Thread.sleep(3000);
-
-						} catch (Exception ex) {
-
-						}
-					}
-
-				}
 			}
+			System.out.println(array.toString());
+
+			String url = "http://oildepot.petrovis.mn/completedShipmentReceiver?ShipmentJSON=" + array.toString();
+			Document doc = null;
+			try {
+				doc = Jsoup.connect(url).get();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Element body = doc.select("body").first();
+			String rr = body.text();
+			System.out.println("called" + rr);
+			if ("1".equals(rr)) {
+				for (DeliveryOrder dd : doList) {
+					dd.setSentStatus(1);
+					cursor.update(dd);
+				}
+
+			} else {
+				for (DeliveryOrder dd : doList) {
+					dd.setSentStatus(1);
+					cursor.update(dd);
+				}
+				System.out.println("0 irsen retry");
+			}
+
+		}
+
 	}
 
 	public void initData() {
@@ -259,9 +283,12 @@ public class HomeController implements Serializable {
 
 		} catch (Exception ex) {
 
-			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
+			
 		}
-
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
+		
+		
 		initData();
 
 	}
@@ -280,17 +307,10 @@ public class HomeController implements Serializable {
 		sb.append(":section");
 
 		PrimeFaces.current().ajax().update(sb.toString());
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
 
 	}
 
-	public void giveCommand(Device d) {
-		try {
-			d.giveCommand(tempCommand);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
 
 	public String productName(int productId) {
 		String ret = "";

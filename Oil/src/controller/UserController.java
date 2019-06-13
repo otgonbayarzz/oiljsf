@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import db.CustomDao;
 import model.User;
@@ -50,6 +52,10 @@ public class UserController implements Serializable {
 			for (Object o : cursor.getListByQuery(new User(), sb.toString())) {
 				getUser();
 				this.user = (User) o;
+				  
+				        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Logged in"));
+				  
+				     
 				return "home";
 			}
 		return "";
