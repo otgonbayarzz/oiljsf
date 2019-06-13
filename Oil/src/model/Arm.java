@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +28,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.primefaces.PrimeFaces;
 
+import controller.HomeController;
 import db.CustomDao;
 
 @Entity
@@ -78,6 +80,10 @@ public class Arm implements Serializable {
 
 	@Transient
 	private boolean pollStop = false;
+
+	@Transient
+	@ManagedProperty(value = "#{homeController}")
+	private HomeController homeController;
 
 	public Arm() {
 		super();
@@ -217,7 +223,8 @@ public class Arm implements Serializable {
 		sb.append(index);
 		sb.append(":section");
 		PrimeFaces.current().ajax().update(sb.toString());
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт зогсоолоо"));
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт зогсоолоо"));
 
 	}
 
@@ -231,7 +238,8 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		giveCommand("01ET");
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Дараагийн ачилтаа сонгоно уу"));
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Дараагийн ачилтаа сонгоно уу"));
 	}
 
 	public void check(long index) {
@@ -294,7 +302,8 @@ public class Arm implements Serializable {
 			ssbb.append(index);
 			ssbb.append("').stop();");
 			executeJsCommand(ssbb.toString());
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт дууслаа"));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт дууслаа"));
 			try {
 
 				Thread.sleep(100);
@@ -303,7 +312,7 @@ public class Arm implements Serializable {
 
 			}
 
-			System.out.println("STOP command" + ssbb.toString());
+			getHomeController().initData();
 
 		} else if (!resp.equals("error")) {
 			// Capacity - Loaded volume
@@ -462,6 +471,16 @@ public class Arm implements Serializable {
 
 	public void setPollStop(boolean pollStop) {
 		this.pollStop = pollStop;
+	}
+
+	public HomeController getHomeController() {
+		if (homeController == null)
+			homeController = new HomeController();
+		return homeController;
+	}
+
+	public void setHomeController(HomeController homeController) {
+		this.homeController = homeController;
 	}
 
 }

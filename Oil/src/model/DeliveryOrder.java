@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.faces.bean.ManagedProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import controller.ApplicationController;
+import controller.HomeController;
 
 @Entity
 @Table(name = "DeliveryOrder")
@@ -88,7 +92,7 @@ public class DeliveryOrder implements Serializable {
 	public DeliveryOrder(int doId) {
 		super();
 		this.deliveryOrderId = doId;
-	
+
 	}
 
 	public int getId() {
@@ -234,5 +238,4 @@ public class DeliveryOrder implements Serializable {
 	public void setSentStatus(int sentStatus) {
 		this.sentStatus = sentStatus;
 	}
-
 }
