@@ -1,11 +1,13 @@
-#Ашигласан технологи
+## Ашигласан технологи
 - Java 1.8
 - JSF 2.2
 - Mysql 8.0
 - Hibernate core 4.3.6
 - Bootstrap 4.0
 - Wildfly 16.0.0 - https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.zip
-#Суулгах заавар
+
+## Суулгах заавар
+
 * Wildfly server - ээ асаахын өмнө  standalone.xml ээс
 ```
 <interface name="management">
@@ -34,7 +36,7 @@
 
 
 
-#Code бүтэц
+##Code бүтэц
 - controller package дотор view удирдах file - ууд багтана
 * ApplicationController - singleton хувьсагчид буюу application 1 удаа зарлагдаж бусад хэсэгт ашиглагдах хувьсагчдыг удирдана.
 * AdminController - admin цонхны хэсгийг удирдана
