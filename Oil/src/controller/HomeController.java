@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import db.CustomDao;
 import model.Tank;
 import model.TankArmMap;
-import model.Device;
+
 import model.Product;
 import model.Arm;
 import model.DeliveryOrder;
