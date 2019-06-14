@@ -1,9 +1,6 @@
 ## Ашигласан технологи
 - Java 1.8
-- JSF 2.2
 - Mysql 8.0
-- Hibernate core 4.3.6
-- Bootstrap 4.0
 - Wildfly 16.0.0 - https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.zip
 
 ## Суулгах заавар
@@ -47,9 +44,9 @@
 - db package дотор Database тэй холбогдох file - ууд багтана
 * hibernate.cfg.xml file - н
 ```
-	   <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/dummy?allowPublicKeyRetrieval=true</property>
-		 <property name="hibernate.connection.username">root</property>
-		 <property name="hibernate.connection.password">root</property>
+<property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/dummy?allowPublicKeyRetrieval=true</property>
+<property name="hibernate.connection.username">root</property>
+<property name="hibernate.connection.password">root</property>
 ```
 энэ хэсэгт database, username, password - г тохируулна
 - filter package дотор user auth хэсгийг удирдах file багтана
