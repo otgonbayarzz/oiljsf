@@ -36,8 +36,10 @@
 
 
 
-##Code бүтэц
-- controller package дотор view удирдах file - ууд багтана
+## Code бүтэц
+
+
+* controller package дотор view удирдах file - ууд багтана
 * ApplicationController - singleton хувьсагчид буюу application 1 удаа зарлагдаж бусад хэсэгт ашиглагдах хувьсагчдыг удирдана.
 * AdminController - admin цонхны хэсгийг удирдана
 * HomeController -  үндсэн цонхны хэсгийг удирдана
