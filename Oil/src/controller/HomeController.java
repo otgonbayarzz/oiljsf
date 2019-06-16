@@ -2,7 +2,9 @@ package controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -55,7 +57,6 @@ public class HomeController implements Serializable {
 	}
 
 	public void pushOrders() {
-		
 
 		Date today = new Date();
 		today.setDate(today.getDate() - 1);
@@ -79,7 +80,8 @@ public class HomeController implements Serializable {
 		sb.append(" and a.cnt = b.cnt ");
 		System.out.println(sb.toString());
 		List<Object> ol = cursor.getListByCustomQuery(Integer.class, sb.toString());
-		
+		System.out.println("---." + ol.size());
+
 		for (Object o : ol) {
 			int doId = (int) o;
 			StringBuilder sbb = new StringBuilder();
@@ -125,7 +127,8 @@ public class HomeController implements Serializable {
 			}
 			System.out.println(array.toString());
 
-			String url = "http://oildepot.petrovis.mn/completedShipmentReceiver?ShipmentJSON=" + array.toString();
+			String url = getAppController().getLocationIp() + "/completedShipmentReceiver?ShipmentJSON=" + array.toString();
+			
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(url).get();
@@ -143,10 +146,7 @@ public class HomeController implements Serializable {
 				}
 
 			} else {
-				for (DeliveryOrder dd : doList) {
-					dd.setSentStatus(1);
-					cursor.update(dd);
-				}
+				
 				System.out.println("0 irsen retry");
 			}
 
@@ -232,12 +232,15 @@ public class HomeController implements Serializable {
 	public void getOrderDataFromOilDepot() {
 
 		try {
-			String url = "http://oildepot.petrovis.mn/findByDeliveryOrderList?LocationID="
+			System.out.println("EHERE0");
+			String url = getAppController().getLocationIp() +  "/findByDeliveryOrderList?LocationID="
 					+ appController.getLocationId();
-			;
+			System.out.println(url);
+			System.out.println("EHERE1");
 			Document doc = Jsoup.connect(url).get();
+			System.out.println(doc);
 			Element body = doc.select("body").first();
-			System.out.println("Text: " + body.text());
+			System.out.println("Text: ----- " + body.text());
 
 			Object obj = new JSONParser().parse(body.text());
 
@@ -275,20 +278,23 @@ public class HomeController implements Serializable {
 					order.setId(((DeliveryOrder) ol.get(0)).getId());
 					cursor.update(order);
 
-				} else
+				} else {
+					System.out.println();
 					cursor.insert(order);
+				}
 
 				// System.out.println("--" + p.getProductName());
 			}
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
 
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
-			
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
-		
-		
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
+
 		initData();
 
 	}
@@ -307,10 +313,10 @@ public class HomeController implements Serializable {
 		sb.append(":section");
 
 		PrimeFaces.current().ajax().update(sb.toString());
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
 
 	}
-
 
 	public String productName(int productId) {
 		String ret = "";

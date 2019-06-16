@@ -26,6 +26,7 @@ public class ApplicationController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String alertMessage;
 	private String locationId;
+	private String locationIp;
 	CustomDao cursor = new CustomDao();
 
 	public ApplicationController() {
@@ -63,6 +64,23 @@ public class ApplicationController implements Serializable {
 
 	public void setLocationId(String locationId) {
 		this.locationId = locationId;
+	}
+
+	public String getLocationIp() {
+		if (this.locationIp == null) {
+			List<Object> ol = cursor.getList(new LocationConfig());
+
+			if (ol != null && ol.size() > 0) {
+
+				this.locationIp = ((LocationConfig) ol.get(0)).getLocationIp();
+			}
+		}
+
+		return locationIp;
+	}
+
+	public void setLocationIp(String locationIp) {
+		this.locationIp = locationIp;
 	}
 
 }

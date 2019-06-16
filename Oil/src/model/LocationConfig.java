@@ -29,6 +29,9 @@ public class LocationConfig implements Serializable {
 	@Column(name = "locationId")
 	private String locationId;
 
+	@Column(name = "locationIp")
+	private String locationIp;
+
 	public int getId() {
 		return id;
 	}
@@ -47,6 +50,14 @@ public class LocationConfig implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getLocationIp() {
+		return locationIp;
+	}
+
+	public void setLocationIp(String locationIp) {
+		this.locationIp = locationIp;
 	}
 
 }

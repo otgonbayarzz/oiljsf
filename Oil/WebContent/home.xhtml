@@ -10,7 +10,7 @@
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
-			<p:poll interval="200" listener="#{homeController.pushOrders}"
+			<p:poll interval="5" listener="#{homeController.pushOrders}"
 				widgetVar="pusher" autoStart="true" />
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-primary btn-sm"

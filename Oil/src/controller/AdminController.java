@@ -117,7 +117,7 @@ public class AdminController implements Serializable {
 	public void loadFromOilDepot() {
 		try {
 			System.out.println("-----------" + getAppController().getLocationId());
-			String url = "http://oildepot.petrovis.mn/findByLocationConfig?LocationID=" + appController.getLocationId();
+			String url = getAppController().getLocationIp() + "/findByLocationConfig?LocationID=" + appController.getLocationId();
 			Document doc = Jsoup.connect(url).get();
 			Element body = doc.select("body").first();
 			System.out.println("Text: " + body.text());
