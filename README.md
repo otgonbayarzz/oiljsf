@@ -27,8 +27,7 @@
 * bin/add-user.sh file г ажиллуулж зааврын дагуу application server удирдах user үүсгэнэ.
 * bin/standalone.sh file г ажиллуулснаар application server асна.
 * http://###.###.###.###:9990 хандаж deployment хэсэг рүү орж build хийсэн .war file - аа upload болон deploy хийнэ.
-* Татаж авсан code - оо задалж IDE(eclipse ,netbeans , intellij) руу import хийж maven build хийж pom.xml дэх
-* Шинээр war file гаргах бол Татаж авсан code - оо задалж IDE(eclipse ,netbeans , intellij) руу import хийж maven build хийж pom.xml дэх library нуудыг татаж авсны дараа build хийнэ. Үүний дараа war file generate хийнэ.
+* Шинээр war file гаргах бол Татаж авсан code - оо задалж IDE(eclipse ,netbeans , intellij) руу import хийж maven build хийж pom.xml дэх library нуудыг татаж авна. Үүний дараа  project - оо  build хийж war file generate хийнэ.
 
 
 
