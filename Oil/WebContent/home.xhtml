@@ -6,11 +6,12 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	
 	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
-			<p:poll interval="5" listener="#{homeController.pushOrders}"
+			<p:poll interval="200" listener="#{homeController.pushOrders}"
 				widgetVar="pusher" autoStart="true" />
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-primary btn-sm"
@@ -148,7 +149,7 @@
 										</div>
 										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="next" actionListener="#{arm.next(index.index)}">
+												value="next" actionListener="#{arm.next(index.index)}" disabled="#{!arm.nextDisabled}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
@@ -210,7 +211,9 @@
 
 
 		</h:panelGroup>
-		<div class="row"></div>
+		<div class="row">
+		
+		</div>
 		<p:remoteCommand name="initData"
 			actionListener="#{homeController.initData}">
 

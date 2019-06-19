@@ -79,7 +79,7 @@ public class Arm implements Serializable {
 	private CustomDao cursor = new CustomDao();
 
 	@Transient
-	private boolean pollStop = false;
+	private boolean nextDisabled = true;
 
 	@Transient
 	@ManagedProperty(value = "#{homeController}")
@@ -177,7 +177,7 @@ public class Arm implements Serializable {
 
 		}
 
-		setPollStop(false);
+		this.nextDisabled = true;
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
 		ssbb.append(index);
@@ -194,7 +194,7 @@ public class Arm implements Serializable {
 	}
 
 	public void stop(long index) {
-		setPollStop(true);
+		this.nextDisabled = false;
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
 		ssbb.append(index);
@@ -229,7 +229,7 @@ public class Arm implements Serializable {
 	}
 
 	public void next(long index) {
-		setPollStop(true);
+		
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
 		ssbb.append(index);
@@ -296,7 +296,7 @@ public class Arm implements Serializable {
 
 			/// completedShipmentReceiver ParamenterName->ShipmentJSON
 
-			setPollStop(true);
+			this.nextDisabled = false;
 			StringBuilder ssbb = new StringBuilder();
 			ssbb.append("PF('poll");
 			ssbb.append(index);
@@ -334,6 +334,7 @@ public class Arm implements Serializable {
 					}
 				}
 			}
+			this.nextDisabled = true;
 			StringBuilder sb = new StringBuilder();
 			sb.append("form:bb:");
 			sb.append(index);
@@ -465,12 +466,12 @@ public class Arm implements Serializable {
 		this.cursor = cursor;
 	}
 
-	public boolean isPollStop() {
-		return pollStop;
+	public boolean isNextDisabled() {
+		return nextDisabled;
 	}
 
-	public void setPollStop(boolean pollStop) {
-		this.pollStop = pollStop;
+	public void setNextDisabled(boolean nextDisabled) {
+		this.nextDisabled = nextDisabled;
 	}
 
 	public HomeController getHomeController() {

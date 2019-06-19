@@ -58,6 +58,7 @@ public class UserController implements Serializable {
 				     
 				return "home";
 			}
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Warn", "Нууц үг буруу"));
 		return "";
 	}
 
