@@ -38,7 +38,7 @@ jaxws/jaxws-endpoint/src/main/webapp/WEB-INF/wsdl/
 
 # Package Files #
 *.jar
-*.war
+
 *.ear
 *.db
 rebel.xml
