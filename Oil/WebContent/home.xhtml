@@ -36,7 +36,7 @@
 
 		<h:panelGroup id="baySection">
 			<ui:repeat value="#{homeController.arms}" var="arm" varStatus="index">
-				<p:poll interval="1" listener="#{arm.check(index.index)}"
+				<p:poll interval="3" listener="#{arm.check(index.index)}"
 					autoStart="false" widgetVar="poll#{index.index}" />
 			</ui:repeat>
 			<div class="row text-center margin-top">
@@ -195,6 +195,13 @@
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
+										
+										
+										<div class="col-sm-12">
+											<h:outputText  value = "#{arm.displayString}"/>
+										</div>
+										
+										
 
 
 									</div>

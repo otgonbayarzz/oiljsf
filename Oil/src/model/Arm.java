@@ -82,6 +82,9 @@ public class Arm implements Serializable {
 	private boolean nextDisabled = true;
 
 	@Transient
+	private String displayString;
+
+	@Transient
 	@ManagedProperty(value = "#{homeController}")
 	private HomeController homeController;
 
@@ -121,26 +124,26 @@ public class Arm implements Serializable {
 			int bytes = socket.getInputStream().read(data, 0, data.length);
 			String responseData = new String(data, 0, bytes, "ASCII");
 			ret = responseData;
+			String kk = "Command:" + cmd + "\n Response :" + ret;
+			System.out.println(kk);
+			this.displayString = kk;
+			executeJsCommand("console.log('" + kk + "');");
+
 
 		} catch (UnknownHostException ex) {
-
+			this.displayString = "Холбгдож чадсангүй";
 			return "error";
 
 		} catch (IOException ex) {
-
+			this.displayString = "Холбгдож чадсангүй";
 			return "error";
 
 		} catch (InterruptedException e) {
+			this.displayString = "Холбгдож чадсангүй";
 
 			return "error";
 
-		} finally {
-			String kk = "Command:" + cmd + "\t Response :" + ret;
-
-			executeJsCommand("console.log('" + kk + "');");
-
-		}
-
+		} 
 		return ret;
 	}
 
@@ -174,17 +177,24 @@ public class Arm implements Serializable {
 
 				}
 			}
+			this.nextDisabled = true;
+			StringBuilder ssbb = new StringBuilder();
+			ssbb.append("PF('poll");
+			ssbb.append(index);
+			ssbb.append("').start();");
 
+			executeJsCommand(ssbb.toString());
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("form:bb:");
+			sb.append(index);
+			sb.append(":section");
+			PrimeFaces.current().ajax().update(sb.toString());
+
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Комманд өгөх боломжгүй байна."));
 		}
-
-		this.nextDisabled = true;
-		StringBuilder ssbb = new StringBuilder();
-		ssbb.append("PF('poll");
-		ssbb.append(index);
-		ssbb.append("').start();");
-
-		executeJsCommand(ssbb.toString());
-
 		StringBuilder sb = new StringBuilder();
 		sb.append("form:bb:");
 		sb.append(index);
@@ -199,7 +209,6 @@ public class Arm implements Serializable {
 		ssbb.append("PF('poll");
 		ssbb.append(index);
 		ssbb.append("').stop();");
-		System.out.println("Stop command -> " + ssbb.toString());
 		executeJsCommand(ssbb.toString());
 
 		try {
@@ -229,15 +238,18 @@ public class Arm implements Serializable {
 	}
 
 	public void next(long index) {
-		
+
 		StringBuilder ssbb = new StringBuilder();
 		ssbb.append("PF('poll");
 		ssbb.append(index);
 		ssbb.append("').stop();");
 		System.out.println("Stop command -> " + ssbb.toString());
 		executeJsCommand(ssbb.toString());
+		StringBuilder cmd = new StringBuilder();
+		cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+		cmd.append("ET");
 
-		giveCommand("01ET");
+		giveCommand(cmd.toString());
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Дараагийн ачилтаа сонгоно уу"));
 	}
@@ -311,8 +323,6 @@ public class Arm implements Serializable {
 			} catch (Exception ex) {
 
 			}
-
-			getHomeController().initData();
 
 		} else if (!resp.equals("error")) {
 			// Capacity - Loaded volume
@@ -482,6 +492,16 @@ public class Arm implements Serializable {
 
 	public void setHomeController(HomeController homeController) {
 		this.homeController = homeController;
+	}
+
+	public String getDisplayString() {
+		if (displayString == null)
+			displayString = "";
+		return displayString;
+	}
+
+	public void setDisplayString(String displayString) {
+		this.displayString = displayString;
 	}
 
 }
