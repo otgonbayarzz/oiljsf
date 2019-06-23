@@ -45,6 +45,7 @@ public class HomeController implements Serializable {
 	private List<Tank> tanks;
 	private List<Product> products;
 	private List<Arm> arms;
+	private List<DeliveryOrder> sorders;
 	private String tempCommand;
 
 	@ManagedProperty(value = "#{appController}")
@@ -69,7 +70,7 @@ public class HomeController implements Serializable {
 		sb.append(" select a.deliveryOrderId from ");
 		sb.append(" (select deliveryOrderId, count(1) as cnt ");
 		sb.append(" from DeliveryOrder ");
-		sb.append(" where shippedDate is not null and sentStatus = 0 ");
+		sb.append(" where (shippedDate is not null OR char_length(shippedDate) > 5) and sentStatus = 0 ");
 		sb.append(" group by deliveryOrderId  ) as a ");
 		sb.append(" inner join ");
 		sb.append(" ( select deliveryOrderId, count(1) as cnt ");
@@ -127,8 +128,9 @@ public class HomeController implements Serializable {
 			}
 			System.out.println(array.toString());
 
-			String url = getAppController().getLocationIp() + "/completedShipmentReceiver?ShipmentJSON=" + array.toString();
-			
+			String url = getAppController().getLocationIp() + "/completedShipmentReceiver?ShipmentJSON="
+					+ array.toString();
+
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(url).get();
@@ -146,7 +148,7 @@ public class HomeController implements Serializable {
 				}
 
 			} else {
-				
+
 				System.out.println("0 irsen retry");
 			}
 
@@ -211,7 +213,7 @@ public class HomeController implements Serializable {
 				sb.append("from DeliveryOrder od ");
 				sb.append("WHERE od.productId =  ");
 				sb.append(a.getProductId());
-				sb.append("  AND shippedDate is null ");
+				sb.append("  AND (shippedDate is null OR char_length(shippedDate) < 5 ) ");
 
 				sb.append("  ");
 				for (Object o : cursor.getListByQuery(new DeliveryOrder(), sb.toString())) {
@@ -233,7 +235,7 @@ public class HomeController implements Serializable {
 
 		try {
 			System.out.println("EHERE0");
-			String url = getAppController().getLocationIp() +  "/findByDeliveryOrderList?LocationID="
+			String url = getAppController().getLocationIp() + "/findByDeliveryOrderList?LocationID="
 					+ appController.getLocationId();
 			System.out.println(url);
 			System.out.println("EHERE1");
@@ -331,6 +333,36 @@ public class HomeController implements Serializable {
 
 	}
 
+	public void getShippedOrders() {
+		Date today = new Date();
+		today.setDate(today.getDate() - 1);
+		today.setHours(00);
+		today.setMinutes(00);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String tdy = df.format(today);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT dor ");
+		sb.append(" FROM DeliveryOrder dor ");
+		sb.append(" WHERE sentStatus = 1 ");
+		sb.append(" AND shippedDate >  '");
+		sb.append(tdy);
+		sb.append("' ");
+		List<Object> ol = getCursor().getListByQuery(new DeliveryOrder(), sb.toString());
+		getSorders().clear();
+		if(ol != null  && ol.size()> 0)
+		{
+			for (Object o : ol) {
+				DeliveryOrder dor = (DeliveryOrder) o;
+				sorders.add(dor);
+			}
+
+		}
+		
+		PrimeFaces.current().ajax().update("form:orderSection");
+
+	}
+
 	public List<Tank> getTanks() {
 		if (tanks == null)
 			tanks = new ArrayList<Tank>();
@@ -382,6 +414,16 @@ public class HomeController implements Serializable {
 
 	public void setAppController(ApplicationController appController) {
 		this.appController = appController;
+	}
+
+	public List<DeliveryOrder> getSorders() {
+		if(sorders == null)
+			sorders = new ArrayList<DeliveryOrder>();
+		return sorders;
+	}
+
+	public void setSorders(List<DeliveryOrder> sorders) {
+		this.sorders = sorders;
 	}
 
 }

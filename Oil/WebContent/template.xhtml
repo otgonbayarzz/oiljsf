@@ -55,9 +55,16 @@
 			<h:form id="form" style="width:100%" styleClass="mainform">
 				<ui:insert name="content" />
 			</h:form>
+
+			<p:confirmDialog global="true" styleClass="cnfDialog">
+				<p:commandButton value="Тийм" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Үгүй" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 		</div>
 
-		<!-- <div class="row">footer</div> -->
+
 	</div>
 	<script src="vendor/jquery/jquery.min.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -69,7 +76,9 @@
 	<script>
 		//<![CDATA[
 		$(document).ready(function() {
-
+			jQuery.curCSS = function(element, prop, val) {
+				return jQuery(element).css(prop, val);
+			};
 		});
 		//]]>
 	</script>

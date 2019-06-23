@@ -6,12 +6,11 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	
 	xmlns:p="http://primefaces.org/ui" template="template.xhtml">
 	<ui:define name="content">
 
 		<div class="row text-center margin-top">
-			<p:poll interval="200" listener="#{homeController.pushOrders}"
+			<p:poll interval="60" listener="#{homeController.pushOrders}"
 				widgetVar="pusher" autoStart="true" />
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-primary btn-sm"
@@ -22,7 +21,9 @@
 			</div>
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-secondary btn-sm"
-					value="Extra command" style="width:100%">
+					value="Ачилтын мэдээллийг харах" style="width:100%"
+					actionListener="#{homeController.getShippedOrders}"
+					onclick="PF('result').show();">
 					<f:ajax execute="@form" render="result" />
 				</h:commandButton>
 			</div>
@@ -149,7 +150,8 @@
 										</div>
 										<div class="col-sm-6 sm-height">
 											<h:commandButton styleClass="btn btn-secondary btn-sm"
-												value="next" actionListener="#{arm.next(index.index)}" disabled="#{!arm.nextDisabled}">
+												value="next" actionListener="#{arm.next(index.index)}"
+												disabled="#{!arm.nextDisabled}">
 												<f:ajax execute="@form" render="result" />
 											</h:commandButton>
 										</div>
@@ -189,19 +191,21 @@
 										<!-- STOP -->
 
 										<div class="col-sm-12">
-											<h:commandButton styleClass="btn btn-danger btn-sm"
+											<p:commandLink styleClass="btn btn-danger btn-sm"
 												value="STOP" style="width:100%"
 												actionListener="#{arm.stop(index.index)}">
-												<f:ajax execute="@form" render="result" />
-											</h:commandButton>
+												<p:confirm header="Confirmation"
+													message="Ачилтаа зогсоох уу? " />
+
+											</p:commandLink>
 										</div>
-										
-										
+
+
 										<div class="col-sm-12">
-											<h:outputText  value = "#{arm.displayString}"/>
+											<h:outputText value="#{arm.displayString}" />
 										</div>
-										
-										
+
+
 
 
 									</div>
@@ -218,9 +222,41 @@
 
 
 		</h:panelGroup>
-		<div class="row">
-		
-		</div>
+
+		<p:dialog widgetVar="result" width="800px" height="350px" modal="ture"
+			 resizable="true"   draggable="true" closeOnEscape="true" styleClass="myDlg">
+			<div class="row">
+				<h:panelGrid id="orderSection">
+					<p:dataTable value="#{homeController.sorders}" var="s"
+						emptyMessage="Хоосон байна">
+						<p:column headerText="Захиалгын дугаар">
+							#{s.deliveryOrderId}
+						</p:column>
+						<p:column headerText="Машины дугаар">
+						#{s.vehicleNo}
+						</p:column>
+						<p:column headerText="Жолоочийн нэр ">
+						#{s.driverName}
+						</p:column>
+						<p:column headerText="Тасалгаа">
+						#{s.compartmentSequence}
+						</p:column>
+						<p:column headerText="Захиалсан хэмжээ">
+						#{s.capacity}
+						</p:column>
+						<p:column headerText="Ачсан хэмжээ">
+						#{s.shippedAmount}
+						</p:column>
+						<p:column headerText="Ачсан хугацаа">
+						#{s.shippedDate}
+						</p:column>
+					</p:dataTable>
+				</h:panelGrid>
+			</div>
+
+
+		</p:dialog>
+
 		<p:remoteCommand name="initData"
 			actionListener="#{homeController.initData}">
 

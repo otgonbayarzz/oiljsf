@@ -85,6 +85,9 @@ public class DeliveryOrder implements Serializable {
 	@Column(name = "sentStatus")
 	private int sentStatus;
 
+	@Column(name = "loadingStatus")
+	private int loadingStatus;
+
 	public DeliveryOrder() {
 		super();
 	}
@@ -237,5 +240,13 @@ public class DeliveryOrder implements Serializable {
 
 	public void setSentStatus(int sentStatus) {
 		this.sentStatus = sentStatus;
+	}
+
+	public int getLoadingStatus() {
+		return loadingStatus;
+	}
+
+	public void setLoadingStatus(int loadingStatus) {
+		this.loadingStatus = loadingStatus;
 	}
 }

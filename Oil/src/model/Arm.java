@@ -126,9 +126,8 @@ public class Arm implements Serializable {
 			ret = responseData;
 			String kk = "Command:" + cmd + "\n Response :" + ret;
 			System.out.println(kk);
-			this.displayString = kk;
-			executeJsCommand("console.log('" + kk + "');");
 
+			this.displayString = kk;
 
 		} catch (UnknownHostException ex) {
 			this.displayString = "Холбгдож чадсангүй";
@@ -143,39 +142,53 @@ public class Arm implements Serializable {
 
 			return "error";
 
-		} 
+		}
 		return ret;
 	}
 
 	public void start(long index) {
+		DeliveryOrder dor = (DeliveryOrder) cursor.getByById(getSelectedOrder().getId(), new DeliveryOrder());
 
-		// Zahialga uguh command
-		StringBuilder cmd = new StringBuilder();
-		cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
-		cmd.append("SB ");
-		cmd.append(getSelectedOrder().getCapacity());
-		String response = "error";
-		response = giveCommand(cmd.toString());
+		if (dor.getLoadingStatus() == 0) {
+			// Zahialga uguh command
+			StringBuilder cmd = new StringBuilder();
+			cmd.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+			cmd.append("SB ");
+			cmd.append(getSelectedOrder().getCapacity());
+			String response = "error";
+			response = giveCommand(cmd.toString());
 
-		if (!"error".equals(response) && response.contains("OK")) {
-			// Эхлэл заалт авах command
-			StringBuilder cmd2 = new StringBuilder();
-			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
-			cmd2.append("VT G 01");
-			String resp = giveCommand(cmd2.toString());
+			if (!"error".equals(response) && response.contains("OK")) {
+				// Эхлэл заалт авах command
+				StringBuilder cmd2 = new StringBuilder();
+				cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+				cmd2.append("VT G 01");
+				String resp = giveCommand(cmd2.toString());
+				this.selectedOrder.setLoadingStatus(1);
 
-			if (resp.split("G 01").length > 1)
-				this.getSelectedOrder()
-						.setArmStartMetr(Float.valueOf(resp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
+				if (resp.split("G 01").length > 1)
+					this.getSelectedOrder().setArmStartMetr(
+							Float.valueOf(resp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
-			if (getSelectedOrder().getId() != 0) {
-				try {
+				if (getSelectedOrder().getId() != 0) {
+					try {
 
-					getCursor().update(this.getSelectedOrder());
+						getCursor().update(this.getSelectedOrder());
 
-				} catch (Exception ex) {
+					} catch (Exception ex) {
 
+					}
 				}
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("form:bb:");
+				sb.append(index);
+				sb.append(":section");
+				PrimeFaces.current().ajax().update(sb.toString());
+
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Комманд өгөх боломжгүй байна."));
 			}
 			this.nextDisabled = true;
 			StringBuilder ssbb = new StringBuilder();
@@ -184,22 +197,16 @@ public class Arm implements Serializable {
 			ssbb.append("').start();");
 
 			executeJsCommand(ssbb.toString());
-
 			StringBuilder sb = new StringBuilder();
 			sb.append("form:bb:");
 			sb.append(index);
 			sb.append(":section");
 			PrimeFaces.current().ajax().update(sb.toString());
-
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Комманд өгөх боломжгүй байна."));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Энэ ачилтыг ачиж байна"));
+
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("form:bb:");
-		sb.append(index);
-		sb.append(":section");
-		PrimeFaces.current().ajax().update(sb.toString());
 
 	}
 
@@ -210,13 +217,21 @@ public class Arm implements Serializable {
 		ssbb.append(index);
 		ssbb.append("').stop();");
 		executeJsCommand(ssbb.toString());
+		executeJsCommand(ssbb.toString());
+		executeJsCommand(ssbb.toString());
 
-		try {
+		if (getSelectedOrder().getShippedAmount() > 0) {
+			getSelectedOrder().setShippedDate(new Date());
+			getSelectedOrder().setShippedDate(new Date());
+			cursor.update(this.getSelectedOrder());
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт эхэлсэн байна"));
 
-			Thread.sleep(100);
+		} else {
+			
+			this.getSelectedOrder().setLoadingStatus(0);
 
-		} catch (Exception ex) {
-
+			cursor.update(this.getSelectedOrder());
 		}
 
 		StringBuilder cmd = new StringBuilder();
@@ -314,15 +329,11 @@ public class Arm implements Serializable {
 			ssbb.append(index);
 			ssbb.append("').stop();");
 			executeJsCommand(ssbb.toString());
+			System.out.println(ssbb.toString());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт дууслаа"));
-			try {
-
-				Thread.sleep(100);
-
-			} catch (Exception ex) {
-
-			}
+			executeJsCommand(ssbb.toString());
+			System.out.println(ssbb.toString());
 
 		} else if (!resp.equals("error")) {
 			// Capacity - Loaded volume
@@ -345,14 +356,15 @@ public class Arm implements Serializable {
 				}
 			}
 			this.nextDisabled = true;
-			StringBuilder sb = new StringBuilder();
-			sb.append("form:bb:");
-			sb.append(index);
-			sb.append(":section");
-
-			PrimeFaces.current().ajax().update(sb.toString());
 
 		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("form:bb:");
+		sb.append(index);
+		sb.append(":section");
+
+		PrimeFaces.current().ajax().update(sb.toString());
 
 	}
 

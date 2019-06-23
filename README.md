@@ -115,6 +115,11 @@ CREATE TABLE `tankarmmap` (
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ```
+11. Delivery order table - d ачилт эхэлсэн эсэхийг тэмдэглэх багана нэмэх. 
+```
+ALTER TABLE `deliveryOrder`
+ADD column `loadingStatus` int(11) default 0;
+```
 ## Суулгах заавар
 
 * Wildfly server - ээ асаахын өмнө  standalone.xml ээс
