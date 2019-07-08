@@ -221,7 +221,7 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		if (getSelectedOrder().getShippedAmount() > 0) {
-			getSelectedOrder().setShippedDate(new Date());
+			getSelectedOrder().setArmId(this.getArmId());;
 			getSelectedOrder().setShippedDate(new Date());
 			cursor.update(this.getSelectedOrder());
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -306,7 +306,9 @@ public class Arm implements Serializable {
 			cmd2.append((this.getArmNo() != null) ? this.getArmNo() : "01");
 			cmd2.append("VT G 01");
 			String emResp = giveCommand(cmd2.toString());
+			getSelectedOrder().setArmId(this.getArmId());
 			getSelectedOrder().setShippedDate(new Date());
+			getSelectedOrder().setLoadingStatus(0);
 
 			if (getSelectedOrder().getId() != 0) {
 
@@ -321,7 +323,7 @@ public class Arm implements Serializable {
 				this.getSelectedOrder()
 						.setArmEndMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
-			/// completedShipmentReceiver ParamenterName->ShipmentJSON
+			
 
 			this.nextDisabled = false;
 			StringBuilder ssbb = new StringBuilder();

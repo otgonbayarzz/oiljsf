@@ -232,73 +232,80 @@ public class HomeController implements Serializable {
 	}
 
 	public void getOrderDataFromOilDepot() {
+		List<Object> ll = new ArrayList<Object>();
+		 ll =  cursor.getListByQuery(new Object(),
+				"select a from DeliveryOrder a where a.loadingStatus = 1 ");
+		if (ll.size() < 1)
+		{
+			try {
 
-		try {
-			System.out.println("EHERE0");
-			String url = getAppController().getLocationIp() + "/findByDeliveryOrderList?LocationID="
-					+ appController.getLocationId();
-			System.out.println(url);
-			System.out.println("EHERE1");
-			Document doc = Jsoup.connect(url).get();
-			System.out.println(doc);
-			Element body = doc.select("body").first();
-			System.out.println("Text: ----- " + body.text());
+				String url = getAppController().getLocationIp() + "/findByDeliveryOrderList?LocationID="
+						+ appController.getLocationId();
+				System.out.println(url);
 
-			Object obj = new JSONParser().parse(body.text());
+				Document doc = Jsoup.connect(url).get();
+				System.out.println(doc);
+				Element body = doc.select("body").first();
 
-			JSONArray ja = (JSONArray) obj;
+				Object obj = new JSONParser().parse(body.text());
 
-			Iterator<JSONObject> orderIterator = ja.iterator();
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			while (orderIterator.hasNext()) {
-				DeliveryOrder order = new DeliveryOrder();
-				JSONObject jjo = orderIterator.next();
-				order.setVehicleNo((String) jjo.get("VehicleNo"));
-				order.setTrailerNo((String) jjo.get("TrailerNo"));
-				order.setProductId((int) (long) jjo.get("ProductID"));
-				order.setCapacity((int) (long) jjo.get("Capacity"));
-				order.setDeliveryOrderId((int) (long) jjo.get("DeliveryOrderID"));
-				order.setDriverName((String) jjo.get("DriverName"));
-				order.setDeliveryOrderDate(df.parse((String) jjo.get("DeliveryOrderDate")));
-				order.setCompartmentSequence((int) (long) jjo.get("CompartmentSequence"));
-				System.out.println(order.getVehicleNo());
-				StringBuilder sb = new StringBuilder();
-				sb.append(" select order ");
-				sb.append(" from DeliveryOrder order ");
-				sb.append(" where compartmentSequence =  ");
-				sb.append(order.getCompartmentSequence());
-				sb.append(" and productId =  ");
-				sb.append(order.getProductId());
-				sb.append(" and deliveryOrderId =  ");
-				sb.append(order.getDeliveryOrderId());
-				sb.append(" and vehicleNo =   '");
-				sb.append(order.getVehicleNo());
-				sb.append("' and shippedDate is null ");
+				JSONArray ja = (JSONArray) obj;
 
-				List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
-				if (ol != null && ol.size() > 0) {
-					order.setId(((DeliveryOrder) ol.get(0)).getId());
-					cursor.update(order);
+				Iterator<JSONObject> orderIterator = ja.iterator();
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				while (orderIterator.hasNext()) {
+					DeliveryOrder order = new DeliveryOrder();
+					JSONObject jjo = orderIterator.next();
+					order.setVehicleNo((String) jjo.get("VehicleNo"));
+					order.setTrailerNo((String) jjo.get("TrailerNo"));
+					order.setProductId((int) (long) jjo.get("ProductID"));
+					order.setCapacity((int) (long) jjo.get("Capacity"));
+					order.setDeliveryOrderId((int) (long) jjo.get("DeliveryOrderID"));
+					order.setDriverName((String) jjo.get("DriverName"));
+					order.setDeliveryOrderDate(df.parse((String) jjo.get("DeliveryOrderDate")));
+					order.setCompartmentSequence((int) (long) jjo.get("CompartmentSequence"));
+					System.out.println(order.getVehicleNo());
+					StringBuilder sb = new StringBuilder();
+					sb.append(" select order ");
+					sb.append(" from DeliveryOrder order ");
+					sb.append(" where compartmentSequence =  ");
+					sb.append(order.getCompartmentSequence());
+					sb.append(" and productId =  ");
+					sb.append(order.getProductId());
+					sb.append(" and deliveryOrderId =  ");
+					sb.append(order.getDeliveryOrderId());
+					sb.append(" and vehicleNo =   '");
+					sb.append(order.getVehicleNo());
+					sb.append("' and shippedDate is null ");
 
-				} else {
-					System.out.println();
-					cursor.insert(order);
+					List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
+					if (ol != null && ol.size() > 0) {
+						order.setId(((DeliveryOrder) ol.get(0)).getId());
+						cursor.update(order);
+
+					} else {
+						System.out.println();
+						cursor.insert(order);
+					}
+
 				}
 
-				// System.out.println("--" + p.getProductName());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
+
 			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
-
-		}
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
 
 		initData();
-
+		}
+		else
+		{
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Ачилт явагдаж байна"));
+		}
 	}
 
 	public void changeOrder(Arm a, int id, int index) {
@@ -332,6 +339,19 @@ public class HomeController implements Serializable {
 		return ret;
 
 	}
+	
+	public String armName(int armId) {
+		String ret = "";
+		for (Arm a : getArms()) {
+			if (armId == a.getArmId()) {
+				ret = a.getArmName();
+				return ret;
+			}
+		}
+
+		return ret;
+
+	}
 
 	public void getShippedOrders() {
 		Date today = new Date();
@@ -345,20 +365,17 @@ public class HomeController implements Serializable {
 		sb.append(" SELECT dor ");
 		sb.append(" FROM DeliveryOrder dor ");
 		sb.append(" WHERE sentStatus = 1 ");
-		sb.append(" AND shippedDate >  '");
-		sb.append(tdy);
-		sb.append("' ");
+
 		List<Object> ol = getCursor().getListByQuery(new DeliveryOrder(), sb.toString());
 		getSorders().clear();
-		if(ol != null  && ol.size()> 0)
-		{
+		if (ol != null && ol.size() > 0) {
 			for (Object o : ol) {
 				DeliveryOrder dor = (DeliveryOrder) o;
 				sorders.add(dor);
 			}
 
 		}
-		
+
 		PrimeFaces.current().ajax().update("form:orderSection");
 
 	}
@@ -417,7 +434,7 @@ public class HomeController implements Serializable {
 	}
 
 	public List<DeliveryOrder> getSorders() {
-		if(sorders == null)
+		if (sorders == null)
 			sorders = new ArrayList<DeliveryOrder>();
 		return sorders;
 	}

@@ -224,30 +224,45 @@
 		</h:panelGroup>
 
 		<p:dialog widgetVar="result" width="800px" height="350px" modal="ture"
-			 resizable="true"   draggable="true" closeOnEscape="true" styleClass="myDlg">
+			resizable="true" draggable="true" closeOnEscape="true"
+			styleClass="myDlg">
 			<div class="row">
 				<h:panelGrid id="orderSection">
 					<p:dataTable value="#{homeController.sorders}" var="s"
 						emptyMessage="Хоосон байна">
-						<p:column headerText="Захиалгын дугаар">
+						<p:column headerText="Захиалгын дугаар"
+							filterBy="#{s.deliveryOrderId}">
 							#{s.deliveryOrderId}
 						</p:column>
-						<p:column headerText="Машины дугаар">
+						<p:column headerText="Машины дугаар"
+							filterBy="#{s.deliveryOrderId}">
 						#{s.vehicleNo}
 						</p:column>
-						<p:column headerText="Жолоочийн нэр ">
+						<p:column headerText="Жолоочийн нэр "
+							filterBy="#{s.driverName}">
 						#{s.driverName}
 						</p:column>
+						
+						<p:column headerText="Гарны дугаар "
+							filterBy="#{homeController.armName(s.armId)}" >
+						#{homeController.armName(s.armId)}
+						</p:column>
+						
+						<p:column headerText="Бүтээгдэхүүний нэр "
+							filterBy="#{homeController.productName(s.productId)}">
+						#{homeController.productName(s.productId)}
+						</p:column>
+						
 						<p:column headerText="Тасалгаа">
 						#{s.compartmentSequence}
 						</p:column>
 						<p:column headerText="Захиалсан хэмжээ">
 						#{s.capacity}
 						</p:column>
-						<p:column headerText="Ачсан хэмжээ">
+						<p:column headerText="Ачсан хэмжээ" filterBy="#{s.shippedAmount}">
 						#{s.shippedAmount}
 						</p:column>
-						<p:column headerText="Ачсан хугацаа">
+						<p:column headerText="Ачсан хугацаа" filterBy="#{s.shippedDate}">
 						#{s.shippedDate}
 						</p:column>
 					</p:dataTable>
