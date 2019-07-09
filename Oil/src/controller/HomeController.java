@@ -31,6 +31,7 @@ import model.TankArmMap;
 
 import model.Product;
 import model.Arm;
+import model.Constant;
 import model.DeliveryOrder;
 
 @SessionScoped
@@ -47,6 +48,8 @@ public class HomeController implements Serializable {
 	private List<Arm> arms;
 	private List<DeliveryOrder> sorders;
 	private String tempCommand;
+	
+	private String density;
 
 	@ManagedProperty(value = "#{appController}")
 	private ApplicationController appController;
@@ -158,11 +161,14 @@ public class HomeController implements Serializable {
 
 	public void initData() {
 		try {
+			
 			getCursor();
 			getTanks().clear();
 			getProducts().clear();
 			getArms().clear();
 			// getOrderDataFromOilDepot();
+			
+			System.out.println("----->"+  Float.valueOf(getDensity()));
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
@@ -276,15 +282,13 @@ public class HomeController implements Serializable {
 					sb.append(order.getDeliveryOrderId());
 					sb.append(" and vehicleNo =   '");
 					sb.append(order.getVehicleNo());
-					sb.append("' and shippedDate is null ");
+					
 
 					List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
 					if (ol != null && ol.size() > 0) {
-						order.setId(((DeliveryOrder) ol.get(0)).getId());
-						cursor.update(order);
+						System.out.println("Already Have");
 
 					} else {
-						System.out.println();
 						cursor.insert(order);
 					}
 
@@ -304,7 +308,7 @@ public class HomeController implements Serializable {
 		else
 		{
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Ачилт явагдаж байна"));
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Ачилт явагдаж байна. Ачилт дууссаны дараа мэдээлэл шинэчилнэ үү!"));
 		}
 	}
 
@@ -441,6 +445,29 @@ public class HomeController implements Serializable {
 
 	public void setSorders(List<DeliveryOrder> sorders) {
 		this.sorders = sorders;
+	}
+	
+public String getDensity() {
+		
+		if (this.density == null) {
+			List<Object> ol = cursor.getList(new Constant());
+
+			if (ol != null && ol.size() > 0) {
+				if("density".equals(((Constant) ol.get(0)).getName()))
+				{
+					this.density = ((Constant) ol.get(0)).getValue();
+				}
+
+				else 
+					this.density = "0";
+			}
+		}
+
+		
+		return density;
+	}
+	public void setDensity(String density) {
+		this.density = density;
 	}
 
 }

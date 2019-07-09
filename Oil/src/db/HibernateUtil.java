@@ -35,6 +35,7 @@ public class HibernateUtil {
 			configuration.addAnnotatedClass(Product.class);
 			configuration.addAnnotatedClass(Tank.class);
 			configuration.addAnnotatedClass(TankArmMap.class);
+			configuration.addAnnotatedClass(Constant.class);
 
 			ServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
 					.build();

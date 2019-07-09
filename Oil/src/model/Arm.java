@@ -172,7 +172,9 @@ public class Arm implements Serializable {
 
 				if (getSelectedOrder().getId() != 0) {
 					try {
-
+						this.selectedOrder.setArmId(this.armId);
+						float denisity = Float.valueOf(getHomeController().getDensity());
+						this.selectedOrder.setDensity(denisity);
 						getCursor().update(this.getSelectedOrder());
 
 					} catch (Exception ex) {
@@ -221,16 +223,20 @@ public class Arm implements Serializable {
 		executeJsCommand(ssbb.toString());
 
 		if (getSelectedOrder().getShippedAmount() > 0) {
-			getSelectedOrder().setArmId(this.getArmId());;
+			getSelectedOrder().setArmId(this.getArmId());
+			;
 			getSelectedOrder().setShippedDate(new Date());
+			float denisity = Float.valueOf(getHomeController().getDensity());
+			this.selectedOrder.setDensity(denisity);
 			cursor.update(this.getSelectedOrder());
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Ачилт эхэлсэн байна"));
 
 		} else {
-			
-			this.getSelectedOrder().setLoadingStatus(0);
 
+			this.getSelectedOrder().setLoadingStatus(0);
+			float denisity = Float.valueOf(getHomeController().getDensity());
+			this.selectedOrder.setDensity(denisity);
 			cursor.update(this.getSelectedOrder());
 		}
 
@@ -265,6 +271,10 @@ public class Arm implements Serializable {
 		cmd.append("ET");
 
 		giveCommand(cmd.toString());
+		this.getSelectedOrder().setLoadingStatus(0);
+		float denisity = Float.valueOf(getHomeController().getDensity());
+		this.selectedOrder.setDensity(denisity);
+		cursor.update(this.getSelectedOrder());
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Дараагийн ачилтаа сонгоно уу"));
 	}
@@ -287,14 +297,13 @@ public class Arm implements Serializable {
 			}
 
 			// Density
-			StringBuilder subCmd1 = new StringBuilder();
-			subCmd1.append((this.getArmNo() != null) ? this.getArmNo() : "01");
-			subCmd1.append("DY CB 7");
-			String densResp = giveCommand(subCmd1.toString());
-			if (densResp.split("Dens").length > 1) {
-				float denisity = Float.valueOf(densResp.split("Dens")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
-				this.selectedOrder.setDensity(denisity);
-			}
+//			StringBuilder subCmd1 = new StringBuilder();
+//			subCmd1.append((this.getArmNo() != null) ? this.getArmNo() : "01");
+//			subCmd1.append("DY CB 7");
+//			String densResp = giveCommand(subCmd1.toString());
+
+			float denisity = Float.valueOf(getHomeController().getDensity());
+			this.selectedOrder.setDensity(denisity);
 
 			// end batch
 			StringBuilder subCmd2 = new StringBuilder();
@@ -323,8 +332,6 @@ public class Arm implements Serializable {
 				this.getSelectedOrder()
 						.setArmEndMetr(Float.valueOf(emResp.split("G 01")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", "")));
 
-			
-
 			this.nextDisabled = false;
 			StringBuilder ssbb = new StringBuilder();
 			ssbb.append("PF('poll");
@@ -344,6 +351,8 @@ public class Arm implements Serializable {
 			subCmd.append("DY CB 2");
 			String statusResp = "error";
 			statusResp = giveCommand(subCmd.toString());
+			float denisity = Float.valueOf(getHomeController().getDensity());
+			this.selectedOrder.setDensity(denisity);
 			if (!statusResp.equals("error") && statusResp.split("Batch").length > 1) {
 				float f = Float.valueOf(
 						giveCommand(subCmd.toString()).split("Batch")[1].replaceAll("[^\\d.]+|\\.(?!\\d)", ""));
