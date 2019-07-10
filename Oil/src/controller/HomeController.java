@@ -283,12 +283,16 @@ public class HomeController implements Serializable {
 					sb.append(" and vehicleNo =   '");
 					sb.append(order.getVehicleNo());
 					
+					sb.append("'");
+					
 
 					List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
+					System.out.println("size" + cursor.getListByQuery(new DeliveryOrder(), sb.toString()));
 					if (ol != null && ol.size() > 0) {
 						System.out.println("Already Have");
 
 					} else {
+						System.out.println("inserting");
 						cursor.insert(order);
 					}
 
