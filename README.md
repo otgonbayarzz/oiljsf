@@ -115,7 +115,7 @@ CREATE TABLE `tankarmmap` (
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ```
-11. Delivery order table - d ачилт эхэлсэн эсэхийг тэмдэглэх багана нэмэх. 
+11. Delivery order table - d ачилт эхэлсэн эсэхийг тэмдэглэх багана нэмэх.
 ```
 ALTER TABLE `deliveryOrder`
 ADD column `loadingStatus` int(11) default 0;
@@ -164,3 +164,17 @@ ADD column `loadingStatus` int(11) default 0;
 - filter package дотор user auth хэсгийг удирдах file багтана
 - model package дотор Database Table - г java class болгосон хэсэг багтана
 * Arm.java нь accuload - той холбогдох хэсэг багтсан болно.
+### Нэмэлт query
+** Table үүсгэх
+```
+CREATE TABLE `constant` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+```
+** Утга нэмэх.... 500г өөрчилж оруулна биз
+```
+INSERT INTO `accuload`.`constant` (`id`, `name`, `value`) VALUES ('1', 'density', '500');
+```
