@@ -48,13 +48,17 @@ public class HomeController implements Serializable {
 	private List<Arm> arms;
 	private List<DeliveryOrder> sorders;
 	private String tempCommand;
-	
+
 	private String density;
 
 	@ManagedProperty(value = "#{appController}")
 	private ApplicationController appController;
 
 	public Date dd = new Date();
+
+	public String startDate = "";
+	public String endDate = "";
+	public int prodId;
 
 	public HomeController() {
 		super();
@@ -161,14 +165,14 @@ public class HomeController implements Serializable {
 
 	public void initData() {
 		try {
-			
+
 			getCursor();
 			getTanks().clear();
 			getProducts().clear();
 			getArms().clear();
 			// getOrderDataFromOilDepot();
-			
-			System.out.println("----->"+  Float.valueOf(getDensity()));
+
+			System.out.println("----->" + Float.valueOf(getDensity()));
 
 			for (Object o : cursor.getList(new Tank())) {
 				Tank b = (Tank) o;
@@ -234,15 +238,14 @@ public class HomeController implements Serializable {
 		}
 
 		PrimeFaces.current().ajax().update("form:baySection");
+		PrimeFaces.current().ajax().update("form:prods");
 
 	}
 
 	public void getOrderDataFromOilDepot() {
 		List<Object> ll = new ArrayList<Object>();
-		 ll =  cursor.getListByQuery(new Object(),
-				"select a from DeliveryOrder a where a.loadingStatus = 1 ");
-		if (ll.size() < 1)
-		{
+		ll = cursor.getListByQuery(new Object(), "select a from DeliveryOrder a where a.loadingStatus = 1 ");
+		if (ll.size() < 1) {
 			try {
 
 				String url = getAppController().getLocationIp() + "/findByDeliveryOrderList?LocationID="
@@ -282,9 +285,8 @@ public class HomeController implements Serializable {
 					sb.append(order.getDeliveryOrderId());
 					sb.append(" and vehicleNo =   '");
 					sb.append(order.getVehicleNo());
-					
+
 					sb.append("'");
-					
 
 					List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
 					System.out.println("size" + cursor.getListByQuery(new DeliveryOrder(), sb.toString()));
@@ -304,15 +306,13 @@ public class HomeController implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Алдаа гарлаа"));
 
 			}
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
-
-		initData();
-		}
-		else
-		{
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Ачилт явагдаж байна. Ачилт дууссаны дараа мэдээлэл шинэчилнэ үү!"));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Мэдээлэл шинэчиллээ"));
+
+			initData();
+		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+					"Ачилт явагдаж байна. Ачилт дууссаны дараа мэдээлэл шинэчилнэ үү!"));
 		}
 	}
 
@@ -347,7 +347,7 @@ public class HomeController implements Serializable {
 		return ret;
 
 	}
-	
+
 	public String armName(int armId) {
 		String ret = "";
 		for (Arm a : getArms()) {
@@ -372,7 +372,16 @@ public class HomeController implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" SELECT dor ");
 		sb.append(" FROM DeliveryOrder dor ");
-		sb.append(" WHERE sentStatus = 1 ");
+		sb.append(" WHERE shippedDate BETWEEN '");
+		sb.append(getStartDate());
+		sb.append("' AND '");
+		sb.append(getEndDate());
+		sb.append("' ");
+		if (prodId != 0) {
+			sb.append("AND productId =  ");
+			sb.append(getProdId());
+			sb.append(" ");
+		}
 
 		List<Object> ol = getCursor().getListByQuery(new DeliveryOrder(), sb.toString());
 		getSorders().clear();
@@ -450,28 +459,57 @@ public class HomeController implements Serializable {
 	public void setSorders(List<DeliveryOrder> sorders) {
 		this.sorders = sorders;
 	}
-	
-public String getDensity() {
-		
+
+	public String getDensity() {
+
 		if (this.density == null) {
 			List<Object> ol = cursor.getList(new Constant());
 
 			if (ol != null && ol.size() > 0) {
-				if("density".equals(((Constant) ol.get(0)).getName()))
-				{
+				if ("density".equals(((Constant) ol.get(0)).getName())) {
 					this.density = ((Constant) ol.get(0)).getValue();
 				}
 
-				else 
+				else
 					this.density = "0";
 			}
 		}
 
-		
 		return density;
 	}
+
 	public void setDensity(String density) {
 		this.density = density;
+	}
+
+	@SuppressWarnings("deprecation")
+	public String getStartDate() {
+		if (startDate == null)
+			startDate = new Date().getYear() + "-" + new Date().getMonth() + "-" + new Date().getDate();
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	@SuppressWarnings("deprecation")
+	public String getEndDate() {
+		if (endDate == null)
+			endDate = new Date().getYear() + "-" + new Date().getMonth() + "-" + new Date().getDate();
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public int getProdId() {
+		return prodId;
+	}
+
+	public void setProdId(int prodId) {
+		this.prodId = prodId;
 	}
 
 }

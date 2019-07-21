@@ -22,7 +22,6 @@
 			<div class="col-lg-4">
 				<h:commandButton styleClass="btn btn-secondary btn-sm"
 					value="Ачилтын мэдээллийг харах" style="width:100%"
-					actionListener="#{homeController.getShippedOrders}"
 					onclick="PF('result').show();">
 					<f:ajax execute="@form" render="result" />
 				</h:commandButton>
@@ -223,13 +222,40 @@
 
 		</h:panelGroup>
 
-		<p:dialog widgetVar="result" width="800px" height="350px" modal="ture"
+		<p:dialog widgetVar="result" width="800px" height="450px" modal="ture"
 			resizable="true" draggable="true" closeOnEscape="true"
 			styleClass="myDlg">
 			<div class="row">
+				<div class="col-md-3">
+					<input type="date" class="form-control-sm" id="startDate">
+					</input>
+				</div>
+				<div class="col-md-3">
+					<input type="date" class="form-control-sm" id="endDate"> </input>
+				</div>
+				<div class="col-md-3">
+					<h:selectOneMenu styleClass="form-control form-control-sm"
+						id="prods" value="#{homeController.prodId}">
+						<f:selectItem itemLabel="Бүгд" itemValue="0"></f:selectItem>
+						<f:selectItems value="#{homeController.products}" var="p"
+							itemLabel="#{p.productName}" itemValue="#{p.id}">
+						</f:selectItems>
+						<p:ajax event="change">
+						</p:ajax>
+					</h:selectOneMenu>
+				</div>
+				<div class="col-md-3">
+					<h:commandButton styleClass="btn btn-primary btn-sm" value="Шүүх"
+						style="width:100%" onclick="updateBean();">
+						<f:ajax render="result" />
+					</h:commandButton>
+				</div>
+
+			</div>
+			<div class="row">
 				<h:panelGrid id="orderSection">
 					<p:dataTable value="#{homeController.sorders}" var="s"
-						emptyMessage="Хоосон байна">
+						emptyMessage="Хоосон байна" id="soorders">
 						<p:column headerText="Захиалгын дугаар"
 							filterBy="#{s.deliveryOrderId}">
 							#{s.deliveryOrderId}
@@ -238,25 +264,24 @@
 							filterBy="#{s.deliveryOrderId}">
 						#{s.vehicleNo}
 						</p:column>
-						<p:column headerText="Жолоочийн нэр "
-							filterBy="#{s.driverName}">
+						<p:column headerText="Жолоочийн нэр " filterBy="#{s.driverName}">
 						#{s.driverName}
 						</p:column>
-						
+
 						<p:column headerText="Гарны дугаар "
-							filterBy="#{homeController.armName(s.armId)}" >
+							filterBy="#{homeController.armName(s.armId)}">
 						#{homeController.armName(s.armId)}
 						</p:column>
-						
+
 						<p:column headerText="Бүтээгдэхүүний нэр "
 							filterBy="#{homeController.productName(s.productId)}">
 						#{homeController.productName(s.productId)}
 						</p:column>
-						
+
 						<p:column headerText="Тасалгаа">
 						#{s.compartmentSequence}
 						</p:column>
-						
+
 						<p:column headerText="Захиалсан хэмжээ">
 						#{s.capacity}
 						</p:column>
@@ -267,16 +292,22 @@
 						#{s.shippedDate}
 						</p:column>
 					</p:dataTable>
+
 				</h:panelGrid>
 			</div>
 
-
+			<h:inputText style="display:none" value="#{homeController.startDate}"
+				id="beanStartDate" />
+			<h:inputText style="display:none" value="#{homeController.endDate}"
+				id="beanEndDate" />
 		</p:dialog>
 
 		<p:remoteCommand name="initData"
-			actionListener="#{homeController.initData}">
+			actionListener="#{homeController.initData}" />
 
-		</p:remoteCommand>
+
+		<p:remoteCommand name="updateBean" onstart="setValue();"
+			actionListener="#{homeController.getShippedOrders()}" />
 
 		<script>
 			//<![CDATA[
@@ -284,6 +315,18 @@
 				initData();
 
 			});
+
+			function setValue() {
+				document.getElementById("form:beanStartDate").value = document
+						.getElementById("startDate").value;
+				document.getElementById("form:beanEndDate").value = document
+						.getElementById("endDate").value;
+				console
+						.log(document.getElementById("form:beanStartDate").value);
+				console.log("-->");
+				console.log(document.getElementById("form:beanEndDate").value);
+
+			}
 			//]]>
 		</script>
 	</ui:define>
