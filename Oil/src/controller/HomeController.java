@@ -396,6 +396,19 @@ public class HomeController implements Serializable {
 		PrimeFaces.current().ajax().update("form:orderSection");
 
 	}
+	
+	
+	
+	public void hardReset()
+	{
+		try {
+			cursor.deleteByQuery("update DeliveryOrder set loadingStatus = 0 where id > -1 ");
+		}
+		catch (Exception ex)
+		{
+			
+		}
+	}
 
 	public List<Tank> getTanks() {
 		if (tanks == null)

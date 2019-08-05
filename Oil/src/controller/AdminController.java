@@ -188,7 +188,11 @@ public class AdminController implements Serializable {
 					cursor.insert(t);
 				}
 			}
-
+			if(tamIterator.hasNext())
+			{
+				System.out.println("truncating");
+				cursor.deleteByQuery("delete from TankArmMap where id > -1 ");
+			}
 			while (tamIterator.hasNext()) {
 				TankArmMap tam = new TankArmMap();
 				JSONObject jjo = tamIterator.next();

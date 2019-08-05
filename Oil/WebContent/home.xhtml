@@ -308,6 +308,7 @@
 
 		<p:remoteCommand name="updateBean" onstart="setValue();"
 			actionListener="#{homeController.getShippedOrders()}" />
+		<p:remoteCommand name = "emergency" actionListener="#{homeController.hardReset}" />
 
 		<script>
 			//<![CDATA[

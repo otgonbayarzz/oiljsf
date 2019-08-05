@@ -161,7 +161,33 @@ public class CustomDao {
 			}
 		}
 	}
+	
+	public void deleteByQuery(String qry)
+	{
 
+		Session session = null;
+
+		List<Object> retList = null;
+
+		try {
+			session = HibernateUtil.getSession();
+
+			Query query = session.createSQLQuery(qry);
+			query.executeUpdate();
+
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// handle exception here
+		} finally {
+			try {
+				if (session != null)
+					session.close();
+			} catch (Exception ex) {
+			}
+		}
+		
+	}
 	public void delete(Object o) {
 
 		Session session = null;
