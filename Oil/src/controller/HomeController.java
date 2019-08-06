@@ -285,6 +285,9 @@ public class HomeController implements Serializable {
 					sb.append(order.getDeliveryOrderId());
 					sb.append(" and vehicleNo =   '");
 					sb.append(order.getVehicleNo());
+					
+					sb.append(" and trailerNo =   '");
+					sb.append(order.getTrailerNo());
 
 					sb.append("'");
 
