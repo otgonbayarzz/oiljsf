@@ -265,6 +265,7 @@ public class HomeController implements Serializable {
 				while (orderIterator.hasNext()) {
 					DeliveryOrder order = new DeliveryOrder();
 					JSONObject jjo = orderIterator.next();
+					System.out.println(jjo);
 					order.setVehicleNo((String) jjo.get("VehicleNo"));
 					order.setTrailerNo((String) jjo.get("TrailerNo"));
 					order.setProductId((int) (long) jjo.get("ProductID"));
@@ -286,10 +287,11 @@ public class HomeController implements Serializable {
 					sb.append(" and vehicleNo =   '");
 					sb.append(order.getVehicleNo());
 					
-					sb.append(" and trailerNo =   '");
+					sb.append("' and trailerNo =   '");
 					sb.append(order.getTrailerNo());
 
 					sb.append("'");
+					
 
 					List<Object> ol = cursor.getListByQuery(new DeliveryOrder(), sb.toString());
 					System.out.println("size" + cursor.getListByQuery(new DeliveryOrder(), sb.toString()));
